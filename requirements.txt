@@ -1,0 +1,30 @@
+# ============================================================================
+# Phoenix Engine V2.0 - Python Dependencies
+# ============================================================================
+
+# Core Data & Database
+pandas==2.1.4
+numpy==1.26.2
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+
+# Financial Data API
+yfinance==0.2.33
+
+# Utilities
+python-dotenv==1.0.0
+tqdm==4.66.1
+
+# Logging & Monitoring
+colorama==0.4.6
+
+# Data Validation
+pydantic==2.5.2
+
+# Testing (for Phase 1, Session 4)
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Future: Streamlit UI (Phase 2)
+# streamlit==1.29.0
+# plotly==5.18.0

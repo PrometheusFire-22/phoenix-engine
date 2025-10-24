@@ -1,0 +1,9 @@
+ticker,company_name,sector,sub_sector,source_name
+EURUSD=X,Euro to USD,FX Rate,Currency,FX_RATES
+KRWUSD=X,Korean Won to USD,FX Rate,Currency,FX_RATES
+TWDUSD=X,Taiwan Dollar to USD,FX Rate,Currency,FX_RATES
+HKDUSD=X,Hong Kong Dollar to USD,FX Rate,Currency,FX_RATES
+AUDUSD=X,Australian Dollar to USD,FX Rate,Currency,FX_RATES
+CADUSD=X,Canadian Dollar to USD,FX Rate,Currency,FX_RATES
+GBPUSD=X,British Pound to USD,FX Rate,Currency,FX_RATES
+CHFUSD=X,Swiss Franc to USD,FX Rate,Currency,FX_RATES

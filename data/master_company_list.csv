@@ -1,0 +1,492 @@
+ticker,company_name,sector,sub_sector,source_name
+000660.KS,Sk Hynix,Deep Tech / Hardware,Semiconductors,AIQ
+005930.KS,Samsung Electron,Deep Tech / Hardware,Semiconductors,AIQ
+2353.TW,Acer,Deep Tech / Hardware,Hardware,AIQ
+2395.TW,Advantech,Deep Tech / Hardware,IoT,AIQ
+3443.TW,Global Unichip,Deep Tech / Hardware,Semiconductors,AIQ
+3690.HK,Meituan,E-commerce,Marketplace,AIQ
+377300.KS,Kakaopay,FinTech,Payments,FINX
+4689.T,Ly (Yahoo Japan),Consumer Tech,Consumer Apps,ARKF
+4704.JP,Trend Micro,Enterprise Software,Cybersecurity,HACK
+4704.JP,Trend Micro,Enterprise Software,Cybersecurity,CIBR
+4755.JP,Rakuten Group,E-commerce,Marketplace,AIQ
+5803 JP,Fujikura,Deep Tech / Hardware,Hardware,AIQ
+6526 JP,Socionext,Deep Tech / Hardware,Semiconductors,AIQ
+6588.JP,Toshiba,Deep Tech / Hardware,Hardware,AIQ
+6701.JP,Nec,Enterprise Software,Business Apps,AIQ
+6702.JP,Fujitsu Limited,Enterprise Software,Business Apps,AIQ
+6954.JP,Fanuc,Deep Tech / Hardware,Robotics,AIQ
+700.HK,Tencent Holdings,Consumer Tech,Gaming,AIQ
+7722.TW,Line Pay Taiwan,FinTech,Payments,FINX
+863.HK,Osl Group,FinTech,Capital Markets Tech,FINX
+9923.HK,Yeahka,FinTech,Payments,FINX
+9959.HK,Linklogis,FinTech,B2B FinTech,FINX
+AAPL,Apple,Deep Tech / Hardware,Hardware,AIQ
+ABNB,Airbnb,E-commerce,Marketplace,ARKK
+ABNB,Airbnb,E-commerce,Marketplace,ARKF
+ACHR,Archer Aviation,Deep Tech / Hardware,Aerospace,ARKK
+ACIW,Aci Worldwide,FinTech,Payments,FINX
+ACN,Accenture,Enterprise Software,Business Apps,AIQ
+ADBE,Adobe,Enterprise Software,Business Apps,AIQ
+ADBE,Adobe,Enterprise Software,Business Apps,WCLD
+ADBE,Adobe,Enterprise Software,Business Apps,SKYY
+ADI,Analog Devices,Deep Tech / Hardware,Semiconductors,SOXX
+ADYEN,Adyen,FinTech,Payments Infrastructure,ARKF
+ADYEN.AS,Adyen,FinTech,Payments Infrastructure,FINX
+AFRM,Affirm Holdings,FinTech,Lending,FINX
+AGYS,Agilysys,Enterprise Software,Vertical SaaS,WCLD
+AI,C3.Ai,Enterprise Software,AI/ML Platform,AIQ
+AI,C3.Ai,Enterprise Software,AI/ML Platform,WCLD
+AKAM,Akamai Technologies,Enterprise Software,Cybersecurity,CIBR
+AKAM,Akamai Technologies,Enterprise Software,Cybersecurity,SKYY
+ALAB,Astera Labs,Deep Tech / Hardware,Semiconductors,IPO
+ALAB,Astera Labs,Deep Tech / Hardware,Semiconductors,SOXX
+ALKT,Alkami Technology,FinTech,B2B FinTech,WCLD
+AMAT,Applied Materials,Deep Tech / Hardware,Semiconductors,SOXX
+AMBA,Ambarella,Deep Tech / Hardware,Semiconductors,AIQ
+AMD,Advanced Micro Devices,Deep Tech / Hardware,Semiconductors,SOXX
+AMD,Advanced Micro Devices,Deep Tech / Hardware,Semiconductors,AIQ
+AMD,Advanced Micro Devices,Deep Tech / Hardware,Semiconductors,ARKK
+AMD,Advanced Micro Devices,Deep Tech / Hardware,Semiconductors,ARKF
+AMP.MI,Amplifon,Digital Health,Health IT,AIQ
+AMZN,Amazon.Com,Enterprise Software,Cloud Infrastructure,AIQ
+AMZN,Amazon.Com,Enterprise Software,Cloud Infrastructure,ARKK
+AMZN,Amazon.Com,Enterprise Software,Cloud Infrastructure,ARKF
+AMZN,Amazon.Com,Enterprise Software,Cloud Infrastructure,SKYY
+ANET,Arista Networks,Enterprise Software,Networking Software,SKYY
+APP,Applovin,AdTech / MarTech,AdTech,AIQ
+APP,Applovin,AdTech / MarTech,AdTech,SKYY
+APPF,Appfolio,Enterprise Software,Vertical SaaS,WCLD
+APPF,Appfolio,Enterprise Software,Vertical SaaS,SKYY
+APPN,Appian,Enterprise Software,DevOps,SKYY
+ARM,Arm Holdings,Deep Tech / Hardware,Semiconductors,IPO
+ARM,Arm Holdings,Deep Tech / Hardware,Semiconductors,SOXX
+AS,Amer Sports,E-commerce,DTC Tech,IPO
+ASAN,Asana,Enterprise Software,Business Apps,WCLD
+ASAN,Asana,Enterprise Software,Business Apps,SKYY
+ASML,Asml Holding ADR,Deep Tech / Hardware,Semiconductors,SOXX
+ASX,Ase Technology Holding,Deep Tech / Hardware,Semiconductors,SOXX
+ATEN,A10 Networks,Enterprise Software,Cybersecurity,HACK
+ATEN,A10 Networks,Enterprise Software,Cybersecurity,CIBR
+AVGO,Broadcom,Deep Tech / Hardware,Semiconductors,SOXX
+AVGO,Broadcom,Deep Tech / Hardware,Semiconductors,AIQ
+AVGO,Broadcom,Deep Tech / Hardware,Semiconductors,HACK
+AVGO,Broadcom,Deep Tech / Hardware,Semiconductors,CIBR
+AVPT,Avepoint,Enterprise Software,Business Apps,WCLD
+BABA,Alibaba,E-commerce,Marketplace,AIQ
+BABA,Alibaba,E-commerce,Marketplace,ARKK
+BABA,Alibaba,E-commerce,Marketplace,ARKF
+BAH,Booz Allen Hamilton Holding,Enterprise Software,Cybersecurity,CIBR
+BB,Blackberry,Enterprise Software,Cybersecurity,CIBR
+BEAM,Beam Therapeutics,Digital Health,Biotech Platform,ARKK
+BIDU,Baidu,AdTech / MarTech,AdTech,AIQ
+BIDU,Baidu,AdTech / MarTech,AdTech,ARKK
+BILL,Bill Holdings,FinTech,B2B FinTech,FINX
+BILL,Bill Holdings,FinTech,B2B FinTech,WCLD
+BIRK,Birkenstock Holding,E-commerce,DTC Tech,IPO
+BITF,Bitfarms (Canada),FinTech,Capital Markets Tech,FINX
+BL,Blackline,Enterprise Software,Business Apps,WCLD
+BL,Blackline,Enterprise Software,Business Apps,SKYY
+BLKB,Blackbaud,Enterprise Software,Vertical SaaS,SKYY
+BLND,Blend Labs,FinTech,B2B FinTech,FINX
+BLSH,Bullish,FinTech,Capital Markets Tech,IPO
+BLSH,Bullish,FinTech,Capital Markets Tech,ARKK
+BLSH,Bullish,FinTech,Capital Markets Tech,ARKF
+BMNR,Bitmine Immersion Technologi,FinTech,Capital Markets Tech,ARKK
+BMNR,Bitmine Immersion Technologies,FinTech,Capital Markets Tech,ARKF
+BOX,Box,Enterprise Software,Business Apps,SKYY
+BRZE,Braze,AdTech / MarTech,MarTech,WCLD
+BULL,Webull,FinTech,Capital Markets Tech,FINX
+BWXT,Bwx Technologies,Deep Tech / Hardware,Hardware,ARKK
+CAI,Caris Life Sciences,Digital Health,Biotech Platform,IPO
+CART,Instacart (Maplebear),E-commerce,Marketplace,IPO
+CAVA,Cava Group,E-commerce,DTC Tech,IPO
+CCCS,Ccc Intelligent,Enterprise Software,Vertical SaaS,AIQ
+CDAY,Ceridian Hcm Holding,Enterprise Software,HR Tech,WCLD
+CDNS,Cadence Design Sys,Deep Tech / Hardware,Semiconductors,AIQ
+CERS,Cerus,Digital Health,Health IT,ARKK
+CFLT,Confluent,Enterprise Software,Data Infrastructure,WCLD
+CFLT,Confluent,Enterprise Software,Data Infrastructure,SKYY
+CHKP,Check Point Software Technologies,Enterprise Software,Cybersecurity,HACK
+CHKP,Check Point Software Technologies,Enterprise Software,Cybersecurity,CIBR
+CHYM,Chime Financial,FinTech,B2C FinTech,IPO
+CIFR,Cipher Mining,FinTech,Capital Markets Tech,FINX
+CLBT,Cellebrite,Enterprise Software,Cybersecurity,WCLD
+COIN,Coinbase Global,FinTech,Capital Markets Tech,FINX
+COIN,Coinbase Global,FinTech,Capital Markets Tech,ARKK
+COIN,Coinbase Global,FinTech,Capital Markets Tech,ARKF
+CORZ,Core Scientific,FinTech,Capital Markets Tech,FINX
+CRCL,Circle Internet Group,FinTech,Payments,IPO
+CRCL,Circle Internet Group,FinTech,Payments,FINX
+CRCL,Circle Internet Group,FinTech,Payments,ARKK
+CRCL,Circle Internet Group,FinTech,Payments,ARKF
+CRDO,Credo Technology Group Holding,Deep Tech / Hardware,Semiconductors,SOXX
+CRM,Salesforce,Enterprise Software,Business Apps,AIQ
+CRM,Salesforce,Enterprise Software,Business Apps,WCLD
+CRM,Salesforce,Enterprise Software,Business Apps,SKYY
+CRSP,Crispr Therapeutics,Digital Health,Biotech Platform,ARKK
+CRWD,Crowdstrike Holdings,Enterprise Software,Cybersecurity,HACK
+CRWD,Crowdstrike Holdings,Enterprise Software,Cybersecurity,CIBR
+CRWD,Crowdstrike Holdings,Enterprise Software,Cybersecurity,ARKF
+CRWD,Crowdstrike Holdings,Enterprise Software,Cybersecurity,WCLD
+CRWD,Crowdstrike Holdings,Enterprise Software,Cybersecurity,SKYY
+CRWV,Coreweave,Enterprise Software,Data Infrastructure,IPO
+CRWV,Coreweave,Enterprise Software,Data Infrastructure,AIQ
+CRWV,Coreweave,Enterprise Software,Data Infrastructure,SKYY
+CSCO,Cisco Systems,Deep Tech / Hardware,Hardware,AIQ
+CSCO,Cisco Systems,Deep Tech / Hardware,Hardware,HACK
+CSCO,Cisco Systems,Deep Tech / Hardware,Hardware,CIBR
+CSCO,Cisco Systems,Deep Tech / Hardware,Hardware,SKYY
+CTLP,Cantaloupe,FinTech,Payments,FINX
+CVLT,Commvault Systems,Enterprise Software,Data Infrastructure,CIBR
+CWAN,Clearwater Analytics,FinTech,Capital Markets Tech,WCLD
+CXM,Sprinklr,AdTech / MarTech,MarTech,WCLD
+CYBR,Cyberark Software,Enterprise Software,Cybersecurity,AIQ
+CYBR,Cyberark Software,Enterprise Software,Cybersecurity,HACK
+CYBR,Cyberark Software,Enterprise Software,Cybersecurity,CIBR
+DASH,Doordash,E-commerce,Marketplace,ARKF
+DBX,Dropbox,Enterprise Software,Business Apps,SKYY
+DDOG,Datadog,Enterprise Software,DevOps,AIQ
+DDOG,Datadog,Enterprise Software,DevOps,WCLD
+DDOG,Datadog,Enterprise Software,DevOps,SKYY
+DE,Deere & Co,Deep Tech / Hardware,Robotics,ARKK
+DELL,Dell Technologies,Deep Tech / Hardware,Hardware,SKYY
+DKNG,Draftkings,Consumer Tech,Gaming,ARKK
+DKNG,Draftkings,Consumer Tech,Gaming,ARKF
+DLO,Dlocal,FinTech,Payments,FINX
+DOCN,Digitalocean Holdings,Enterprise Software,Data Infrastructure,WCLD
+DOCN,Digitalocean Holdings,Enterprise Software,Data Infrastructure,SKYY
+DOCU,Docusign,Enterprise Software,Business Apps,WCLD
+DOCU,Docusign,Enterprise Software,Business Apps,SKYY
+DOMO,Domo,Enterprise Software,Data Infrastructure,SKYY
+DSY,Discovery,AdTech / MarTech,AdTech,ARKF
+DT,Dynatrace,Enterprise Software,DevOps,WCLD
+DXC,Dxc Technology,Enterprise Software,Business Apps,AIQ
+ENTG,Entegris,Deep Tech / Hardware,Semiconductors,SOXX
+ERIC,Ericsson,Deep Tech / Hardware,Hardware,AIQ
+ESTC,Elastic,Enterprise Software,Data Infrastructure,WCLD
+ESTC,Elastic,Enterprise Software,Data Infrastructure,SKYY
+ETOR,Etoro Group,FinTech,Capital Markets Tech,FINX
+ETOR,Etoro Group,FinTech,Capital Markets Tech,ARKF
+EXAS,Exact Sciences,Digital Health,Health IT,ARKK
+EXPN.L,Experian,FinTech,B2B FinTech,AIQ
+FFIV,F5,Enterprise Software,Cybersecurity,HACK
+FFIV,F5,Enterprise Software,Cybersecurity,CIBR
+FI,Fiserv,FinTech,B2B FinTech,FINX
+FIG,Figma,Enterprise Software,Business Apps,IPO
+FIS,Fidelity National Info,FinTech,B2B FinTech,FINX
+FIVN,Five9,Enterprise Software,Business Apps,WCLD
+FIVN,Five9,Enterprise Software,Business Apps,SKYY
+FLYW,Flywire,FinTech,Payments,FINX
+FOUR,Shift4 Payment,FinTech,Payments,FINX
+FROG,Jfrog,Enterprise Software,DevOps,WCLD
+FRSH,Freshworks,Enterprise Software,Business Apps,WCLD
+FSLY,Fastly,Enterprise Software,Data Infrastructure,HACK
+FSLY,Fastly,Enterprise Software,Data Infrastructure,WCLD
+FSLY,Fastly,Enterprise Software,Data Infrastructure,SKYY
+FTNT,Fortinet,Enterprise Software,Cybersecurity,AIQ
+FTNT,Fortinet ,Enterprise Software,Cybersecurity,HACK
+FTNT,Fortinet ,Enterprise Software,Cybersecurity,CIBR
+FUTU,Futu Holdings,FinTech,Capital Markets Tech,ARKF
+G,Genpact,Enterprise Software,Business Apps,AIQ
+GD,General Dynamics,Deep Tech / Hardware,Aerospace,HACK
+GEHC,Ge Healthcare Technology,Digital Health,Health IT,AIQ
+GEN,Gen Digital,Enterprise Software,Cybersecurity,HACK
+GEN,Gen Digital ,Enterprise Software,Cybersecurity,CIBR
+GLBE,Global-E,E-commerce,E-commerce Infrastructure,ARKF
+GLXY.TO,Galaxy Digital,FinTech,Capital Markets Tech,FINX
+GOOGL,Alphabet,AdTech / MarTech,Search & Ads,AIQ
+GOOGL,Alphabet  ,AdTech / MarTech,Search & Ads,SKYY
+GPN,Global Payments,FinTech,Payments,FINX
+GTLB,Gitlab,Enterprise Software,DevOps,ARKK
+GTLB,Gitlab,Enterprise Software,DevOps,WCLD
+GTLB,Gitlab  ,Enterprise Software,DevOps,SKYY
+GWRE,Guidewire Software,Enterprise Software,Vertical SaaS,FINX
+HO.PA,Thales,Deep Tech / Hardware,Aerospace,CIBR
+HOOD,Robinhood Markets,FinTech,Capital Markets Tech,ARKK
+HOOD,Robinhood Markets,FinTech,Capital Markets Tech,ARKF
+HPE,Hewlett Packard,Deep Tech / Hardware,Hardware,AIQ
+HPE,Hewlett Packard,Deep Tech / Hardware,Hardware,SKYY
+HQY,Healthequity,Digital Health,Health IT,FINX
+HUB.AX,Hub24,FinTech,Capital Markets Tech,FINX
+HUBS,Hubspot,AdTech / MarTech,MarTech,WCLD
+HUBS,Hubspot ,AdTech / MarTech,MarTech,SKYY
+HUT,Hut 8 ,FinTech,Capital Markets Tech,AIQ
+HUT,Hut 8,FinTech,Capital Markets Tech,FINX
+HYQ.DE,Hypoport,FinTech,B2B FinTech,FINX
+IBM,IBM,Enterprise Software,Business Apps,AIQ
+IBM,IBM,Enterprise Software,Business Apps,SKYY
+IBTA,Ibotta,AdTech / MarTech,MarTech,ARKF
+ICE,Intercontinental Exchange,FinTech,Capital Markets Tech,ARKF
+IFX GR,Infineon Technologies,Deep Tech / Hardware,Semiconductors,AIQ
+IIIV,I3 Verticals,FinTech,Payments,FINX
+ILMN,Illumina,Digital Health,Biotech Platform,ARKK
+INFA,Informatica,Enterprise Software,Data Infrastructure,AIQ
+INFY,Infosys Limited,Enterprise Software,Business Apps,CIBR
+INTA,Intapp,Enterprise Software,Vertical SaaS,WCLD
+INTC,Intel,Deep Tech / Hardware,Semiconductors,SOXX
+INTC,Intel ,Deep Tech / Hardware,Semiconductors,AIQ
+INTU,Intuit ,FinTech,SMB FinTech,FINX
+INTU,Intuit,FinTech,SMB FinTech,ARKF
+INTU,Intuit,FinTech,SMB FinTech,SKYY
+IOT,Samsara,Deep Tech / Hardware,IoT,WCLD
+IRDM,Iridium Communications,Deep Tech / Hardware,Hardware,ARKK
+IRE.AX,Iress,FinTech,Capital Markets Tech,FINX
+JKHY,Jack Henry,FinTech,B2B FinTech,FINX
+KLAC,Kla,Deep Tech / Hardware,Semiconductors,SOXX
+KLAR,Klarna Group,FinTech,Lending,ARKF
+KSPI,Kaspi.Kz,FinTech,B2C FinTech,IPO
+KSPI,Kaspi.Kz,FinTech,B2C FinTech,ARKF
+KTOS,Kratos Defense & Security,Deep Tech / Hardware,Aerospace,ARKK
+KVUE,Kenvue,E-commerce,DTC Tech,IPO
+KVYO,Klaviyo,AdTech / MarTech,MarTech,IPO
+KVYO,Klaviyo,AdTech / MarTech,MarTech,WCLD
+KVYO,Klaviyo  ,AdTech / MarTech,MarTech,SKYY
+LC,Lendingclub,FinTech,Lending,FINX
+LDOS,Leidos Holdings,Enterprise Software,Business Apps,CIBR
+LINE,Lineage,Unclassified,Unclassified,IPO
+LMND,Lemonade,FinTech,InsurTech,FINX
+LOAR,Loar Holdings,Deep Tech / Hardware,Aerospace,IPO
+LPRO,Open Lending,FinTech,Lending,FINX
+LRCX,Lam Research,Deep Tech / Hardware,Semiconductors,SOXX
+LU,Lufax Holding,FinTech,Lending,FINX
+LUMN,Lumen Technologies,Deep Tech / Hardware,Hardware,SKYY
+MARA,Marathon Digital Holdings,FinTech,Capital Markets Tech,FINX
+MBLY,Mobileye Global,Deep Tech / Hardware,Robotics,IPO
+MCHP,Microchip Technology,Deep Tech / Hardware,Semiconductors,SOXX
+MDB,Mongodb,Enterprise Software,Data Infrastructure,WCLD
+MDB,Mongodb ,Enterprise Software,Data Infrastructure,SKYY
+MELI,Mercadolibre,E-commerce,Marketplace,ARKF
+META,Meta Platforms,Consumer Tech,Social Media,AIQ
+META,Meta Platforms,Consumer Tech,Social Media,ARKK
+META,Meta Platforms,Consumer Tech,Social Media,ARKF
+MITK,Mitek Systems,FinTech,B2B FinTech,FINX
+MLNK,Meridianlink,FinTech,B2B FinTech,FINX
+MNDY,Monday.Com,Enterprise Software,Business Apps,WCLD
+MPWR,Monolithic Power Systems,Deep Tech / Hardware,Semiconductors,SOXX
+MRVL,Marvell Technology,Deep Tech / Hardware,Semiconductors,SOXX
+MRVL,Marvell Technology ,Deep Tech / Hardware,Semiconductors,AIQ
+MSFT,Microsoft ,Enterprise Software,Cloud Infrastructure,AIQ
+MSFT,Microsoft,Enterprise Software,Cloud Infrastructure,SKYY
+MTSI,Macom Technology Solutions,Deep Tech / Hardware,Semiconductors,SOXX
+MU,Micron Technology,Deep Tech / Hardware,Semiconductors,SOXX
+MU,Micron Technology ,Deep Tech / Hardware,Semiconductors,AIQ
+NCC.L,Ncc Group,Enterprise Software,Cybersecurity,CIBR
+NCNO,Ncino,FinTech,B2B FinTech,FINX
+NCNO,Ncino,FinTech,B2B FinTech,WCLD
+NET,Cloudflare,Enterprise Software,Infrastructure Security,HACK
+NET,Cloudflare  ,Enterprise Software,Infrastructure Security,CIBR
+NET,Cloudflare  ,Enterprise Software,Infrastructure Security,WCLD
+NET,Cloudflare  ,Enterprise Software,Infrastructure Security,SKYY
+NEXI IM,Nexi Spa,FinTech,Payments Infrastructure,FINX
+NFLX,Netflix,Consumer Tech,Consumer Apps,AIQ
+NICE,Nice,Enterprise Software,Business Apps,AIQ
+NOC,Northrop Grumman,Deep Tech / Hardware,Aerospace,HACK
+NOW,Servicenow,Enterprise Software,Business Apps,AIQ
+NOW,Servicenow ,Enterprise Software,Business Apps,WCLD
+NOW,Servicenow ,Enterprise Software,Business Apps,SKYY
+NTAP,Netapp,Enterprise Software,Cloud Infrastructure,SKYY
+NTCT,Netscout Systems,Enterprise Software,Cybersecurity,CIBR
+NTLA,Intellia Therapeutics,Digital Health,Biotech Platform,ARKK
+NTNX,Nutanix,Enterprise Software,Cloud Infrastructure,WCLD
+NTNX,Nutanix  ,Enterprise Software,Cloud Infrastructure,SKYY
+NTRA,Natera,Digital Health,Health IT,ARKK
+NU,Nu Holdings,FinTech,B2C FinTech,ARKF
+NVDA,Nvidia,Deep Tech / Hardware,Semiconductors,SOXX
+NVDA,Nvidia ,Deep Tech / Hardware,Semiconductors,AIQ
+NVDA,Nvidia,Deep Tech / Hardware,Semiconductors,ARKK
+NVDA,Nvidia,Deep Tech / Hardware,Semiconductors,ARKF
+NVMI,Nova Ltd,Deep Tech / Hardware,Semiconductors,SOXX
+NXPI,Nxp Semiconductors,Deep Tech / Hardware,Semiconductors,SOXX
+NXPI,Nxp Semiconductors,Deep Tech / Hardware,Semiconductors,AIQ
+NXT,Nextracker,Deep Tech / Hardware,Hardware,IPO
+OKTA,Okta,Enterprise Software,Cybersecurity,AIQ
+OKTA,Okta ,Enterprise Software,Cybersecurity,HACK
+OKTA,Okta ,Enterprise Software,Cybersecurity,CIBR
+OKTA,Okta ,Enterprise Software,Cybersecurity,WCLD
+ON,On Semiconductor,Deep Tech / Hardware,Semiconductors,SOXX
+ORCL,Oracle,Enterprise Software,Data Infrastructure,AIQ
+ORCL,Oracle ,Enterprise Software,Data Infrastructure,SKYY
+OS,Onestream,Unclassified,Unclassified,WCLD
+OSPN,Onespan,Enterprise Software,Cybersecurity,CIBR
+OTEX,Open Text,Enterprise Software,Business Apps,SKYY
+OTEX.TO,Open Text,Enterprise Software,Business Apps,CIBR
+PACB,Pacific Biosciences Of Calif,Digital Health,Biotech Platform,ARKK
+PAGS,Pagseguro Digi,FinTech,Payments Infrastructure,FINX
+PANW,Palo Alto Networks,Enterprise Software,Cybersecurity,HACK
+PANW,Palo Alto Networks ,Enterprise Software,Cybersecurity,CIBR
+PANW,Palo Alto Networks ,Enterprise Software,Cybersecurity,WCLD
+PANW,Palo Alto Networks ,Enterprise Software,Cybersecurity,SKYY
+PATH,Uipath  ,Enterprise Software,AI & Data Intelligence,AIQ
+PATH,Uipath,Enterprise Software,AI & Data Intelligence,WCLD
+PAY,Paymentus Holdings,FinTech,Payments Infrastructure,FINX
+PAYC,Paycom Software,Enterprise Software,HR Tech,WCLD
+PAYC,Paycom Software ,Enterprise Software,HR Tech,SKYY
+PAYO,Payoneer Global,FinTech,Payments Infrastructure,FINX
+PCOR,Procore Technologies,Enterprise Software,Vertical SaaS,WCLD
+PCTY,Paylocity Holding,Enterprise Software,HR Tech,WCLD
+PCTY,Paylocity Holding ,Enterprise Software,HR Tech,SKYY
+PD,Pagerduty,Enterprise Software,DevOps,ARKK
+PD,Pagerduty,Enterprise Software,DevOps,WCLD
+PEGA,Pegasystems,Enterprise Software,Business Apps,AIQ
+PGY,Pagaya Technologies,FinTech,AI & Data Intelligence,FINX
+PINS,Pinterest,Consumer Tech,Social Media,ARKK
+PINS,Pinterest,Consumer Tech,Social Media,ARKF
+PLTR,Palantir Technologies,Enterprise Software,AI & Data Intelligence,AIQ
+PLTR,Palantir Technologies,Enterprise Software,AI & Data Intelligence,ARKK
+PLTR,Palantir Technologies,Enterprise Software,AI & Data Intelligence,ARKF
+PLTR,Palantir Technologies,Enterprise Software,AI & Data Intelligence,WCLD
+PONY,Pony Ai,Deep Tech / Hardware,Robotics,IPO
+PONY,Pony Ai ,Deep Tech / Hardware,Robotics,AIQ
+PSFE,Paysafe,FinTech,Payments Infrastructure,FINX
+PSTG,Pure Storage,Enterprise Software,Cloud Infrastructure,SKYY
+PYPL,Paypal Holdings,FinTech,B2C FinTech,FINX
+PYPL,Paypal Holdings,FinTech,B2C FinTech,ARKF
+QCOM,Qualcomm ,Deep Tech / Hardware,Semiconductors,SOXX
+QCOM,Qualcomm,Deep Tech / Hardware,Semiconductors,AIQ
+QLYS,Qualys,Enterprise Software,Cybersecurity,HACK
+QLYS,Qualys ,Enterprise Software,Cybersecurity,CIBR
+QLYS,Qualys ,Enterprise Software,Cybersecurity,WCLD
+QLYS,Qualys ,Enterprise Software,Cybersecurity,SKYY
+QTWO,Q2 Holdings,FinTech,B2B FinTech,WCLD
+QTWO,Q2 Holdings ,FinTech,B2B FinTech,SKYY
+QUBT,Quantum Computing,Deep Tech / Hardware,Hardware,AIQ
+RBLX,Roblox,Consumer Tech,Gaming,ARKK
+RBLX,Roblox,Consumer Tech,Gaming,ARKF
+RBRK,Rubrik,Enterprise Software,Cybersecurity,IPO
+RBRK,Rubrik ,Enterprise Software,Cybersecurity,HACK
+RBRK,Rubrik  ,Enterprise Software,Cybersecurity,CIBR
+RBRK,Rubrik,Enterprise Software,Cybersecurity,WCLD
+RBRK,Rubrik,Enterprise Software,Cybersecurity,SKYY
+RDDT,Reddit,Consumer Tech,Social Media,IPO
+RDDT,Reddit,Consumer Tech,Social Media,ARKF
+RDWR,Radware,Enterprise Software,Cybersecurity,HACK
+RDWR,Radware,Enterprise Software,Cybersecurity,CIBR
+RIOT,Riot Platforms,FinTech,Capital Markets Tech,FINX
+RMBS,Rambus,Deep Tech / Hardware,Semiconductors,SOXX
+RNG,Ringcentral,Enterprise Software,Business Apps,WCLD
+RNG,Ringcentral  ,Enterprise Software,Business Apps,SKYY
+ROKU,Roku,AdTech / MarTech,AdTech,ARKK
+ROKU,Roku,AdTech / MarTech,AdTech,ARKF
+RPD,Rapid7,Enterprise Software,Cybersecurity,HACK
+RPD,Rapid7 ,Enterprise Software,Cybersecurity,CIBR
+RXRX,Recursion Pharmaceuticals,Digital Health,Biotech Platform,ARKK
+S,Sentinelone,Enterprise Software,Cybersecurity,HACK
+S,Sentinelone  ,Enterprise Software,Cybersecurity,CIBR
+S,Sentinelone  ,Enterprise Software,Cybersecurity,WCLD
+SAIC,Science Applications International,Enterprise Software,Business Apps,CIBR
+SAIL,Sailpoint,Enterprise Software,Cybersecurity,IPO
+SAIL,Sailpoint ,Enterprise Software,Cybersecurity,WCLD
+SAP,Sap,Enterprise Software,Business Apps,SKYY
+SARO,Standardaero,Deep Tech / Hardware,Aerospace,IPO
+SE,Sea,Consumer Tech,Gaming,ARKF
+SEMR,Semrush Holdings,AdTech / MarTech,MarTech,WCLD
+SEZL,Sezzle,FinTech,Lending,FINX
+SFD,Smithfield Foods,Unclassified,Unclassified,IPO
+SHOP,Shopify,E-commerce,E-commerce Infrastructure,AIQ
+SHOP,Shopify,E-commerce,E-commerce Infrastructure,ARKK
+SHOP,Shopify,E-commerce,E-commerce Infrastructure,ARKF
+SHOP,Shopify  ,E-commerce,E-commerce Infrastructure,WCLD
+SHOP,Shopify  ,E-commerce,E-commerce Infrastructure,SKYY
+SIE.GR,Siemens,Deep Tech / Hardware,Hardware,AIQ
+SLMT,Brera Holdings,Consumer Tech,Social Media,ARKK
+SLMT,Brera Holdings,Consumer Tech,Social Media,ARKF
+SMCI,Super Micro Computer,Deep Tech / Hardware,Hardware,AIQ
+SNAP,Snap,Consumer Tech,Social Media,AIQ
+SNOW,Snowflake,Enterprise Software,Data Infrastructure,AIQ
+SNOW,Snowflake ,Enterprise Software,Data Infrastructure,WCLD
+SNOW,Snowflake  ,Enterprise Software,Data Infrastructure,SKYY
+SNPS,Synopsys,Deep Tech / Hardware,Semiconductors,AIQ
+SOFI,Sofi Technologies,FinTech,B2C FinTech,FINX
+SOFI,Sofi Technologies,FinTech,B2C FinTech,ARKK
+SOFI,Sofi Technologies,FinTech,B2C FinTech,ARKF
+SOUN,Soundhound Ai,Enterprise Software,AI & Data Intelligence,AIQ
+SPNS,Sapiens Intl,Enterprise Software,Vertical SaaS,FINX
+SPOT,Spotify Technology,Consumer Tech,Consumer Apps,ARKF
+SPSC,Sps Commerce,Enterprise Software,Vertical SaaS,WCLD
+SPT,Sprout Social,AdTech / MarTech,MarTech,WCLD
+SPT,Sprout Social  ,AdTech / MarTech,MarTech,SKYY
+SSNC,Ss&C Technologies,FinTech,Capital Markets Tech,FINX
+STM,Stmicroelectronics,Deep Tech / Hardware,Semiconductors,SOXX
+STNE,Stoneco,FinTech,Payments Infrastructure,AIQ
+STNE,Stoneco,FinTech,Payments Infrastructure,FINX
+STX,Seagate Technologies,Deep Tech / Hardware,Hardware,AIQ
+SWKS,Skyworks Solutions,Deep Tech / Hardware,Semiconductors,SOXX
+TDC,Teradata,Enterprise Software,Data Infrastructure,AIQ
+TEAM,Atlassian,Enterprise Software,Business Apps,WCLD
+TEAM,Atlassian  ,Enterprise Software,Business Apps,SKYY
+TEM,Tempus Ai,Digital Health,AI & Data Intelligence,IPO
+TEM,Tempus Ai,Digital Health,AI & Data Intelligence,ARKK
+TEMN.SW,Temenos,FinTech,B2B FinTech,AIQ
+TEMN.SW,Temenos,FinTech,B2B FinTech,FINX
+TENB,Tenable Holdings ,Enterprise Software,Cybersecurity,HACK
+TENB,Tenable Holdings ,Enterprise Software,Cybersecurity,CIBR
+TENB,Tenable Holdings,Enterprise Software,Cybersecurity,WCLD
+TER,Teradyne,Deep Tech / Hardware,Hardware,SOXX
+TER,Teradyne,Deep Tech / Hardware,Hardware,ARKK
+TIETO.HE,Tietoevry Oyj,Enterprise Software,Business Apps,AIQ
+TOST,Toast,Enterprise Software,Vertical SaaS,FINX
+TOST,Toast,Enterprise Software,Vertical SaaS,ARKF
+TOST,Toast ,Enterprise Software,Vertical SaaS,WCLD
+TOST,Toast  ,Enterprise Software,Vertical SaaS,SKYY
+TREE,Lendingtree,FinTech,Lending,FINX
+TRI,Thomson Reuters,Enterprise Software,Vertical SaaS,AIQ
+TSLA,Tesla,Deep Tech / Hardware,Robotics,AIQ
+TSLA,Tesla,Deep Tech / Hardware,Robotics,ARKK
+TSM,Taiwan Semiconductor,Deep Tech / Hardware,Semiconductors,SOXX
+TSM,Taiwan Semiconductor,Deep Tech / Hardware,Semiconductors,AIQ
+TSM,Taiwan Semiconductor,Deep Tech / Hardware,Semiconductors,ARKK
+TTAN,Servicetitan,Enterprise Software,Vertical SaaS,IPO
+TTAN,Servicetitan,Enterprise Software,Vertical SaaS,WCLD
+TTAN,Servicetitan  ,Enterprise Software,Vertical SaaS,SKYY
+TTD,Trade Desk,AdTech / MarTech,AdTech,AIQ
+TTD,Trade Desk,AdTech / MarTech,AdTech,ARKK
+TTD,Trade Desk,AdTech / MarTech,AdTech,SKYY
+TWLO,Twilio,Enterprise Software,CPaaS (API Economy),AIQ
+TWLO,Twilio,Enterprise Software,CPaaS (API Economy),WCLD
+TWLO,Twilio  ,Enterprise Software,CPaaS (API Economy),SKYY
+TWST,Twist Bioscience,Digital Health,Biotech Platform,ARKK
+TXG,10X Genomics,Digital Health,Biotech Platform,ARKK
+TXN,Texas Instrument,Deep Tech / Hardware,Semiconductors,SOXX
+UBER,Uber Technologies,E-commerce,Marketplace,AIQ
+ULS,Ul Solutions,Unclassified,Unclassified,IPO
+UMC,United Micro Electronics,Deep Tech / Hardware,Semiconductors,SOXX
+UPST,Upstart Holdings,FinTech,Lending,FINX
+VCYT,Veracyte,Digital Health,Biotech Platform,ARKK
+VEEV,Veeva Systems,Enterprise Software,Vertical SaaS,WCLD
+VEEV,Veeva Systems  ,Enterprise Software,Vertical SaaS,SKYY
+VERX,Vertex,Enterprise Software,Vertical SaaS,FINX
+VG,Venture Global,Unclassified,Unclassified,IPO
+VIK,Viking Holdings,Unclassified,Unclassified,IPO
+VIRT,Virtu Financial,FinTech,Capital Markets Tech,FINX
+VRNS,Varonis Systems,Enterprise Software,Cybersecurity,HACK
+VRNS,Varonis Systems ,Enterprise Software,Cybersecurity,CIBR
+VRNT,Verint Systems,Enterprise Software,Business Apps,AIQ
+WDAY,Workday,Enterprise Software,HR Tech,AIQ
+WDAY,Workday ,Enterprise Software,HR Tech,WCLD
+WDAY,Workday  ,Enterprise Software,HR Tech,SKYY
+WEAV,Weave Communications,Enterprise Software,Vertical SaaS,WCLD
+WGS,Genedx Holdings,Digital Health,Biotech Platform,ARKK
+WISE.L,Wise Plc,FinTech,Payments,FINX
+WIX,Wix.Com,E-commerce,E-commerce Infrastructure,AIQ
+WIX,Wix.Com,E-commerce,E-commerce Infrastructure,WCLD
+WIX,Wix.Com,E-commerce,E-commerce Infrastructure,SKYY
+WK,Workiva ,Enterprise Software,Business Apps,WCLD
+WK,Workiva,Enterprise Software,Business Apps,SKYY
+WKL.AS,Wolters Kluwer,Enterprise Software,Vertical SaaS,AIQ
+WRD,Weride,Deep Tech / Hardware,Robotics,AIQ
+XRO.AX,Xero Ltd,FinTech,SMB FinTech,FINX
+XYZ,Block ,FinTech,SMB FinTech,FINX
+XYZ,Block,FinTech,SMB FinTech,ARKK
+XYZ,Block,FinTech,SMB FinTech,ARKF
+Z,Zillow Group,E-commerce,Marketplace,ARKF
+ZBRA,Zebra Tech,Deep Tech / Hardware,Hardware,AIQ
+ZETA,Zeta Global Holdings,AdTech / MarTech,MarTech,WCLD
+ZIP.AX,Zip,FinTech,Lending,FINX
+ZK,Zeekr Intelligent Technology,Deep Tech / Hardware,Robotics,IPO
+ZM,Zoom Communications,Enterprise Software,Business Apps,SKYY
+ZS,Zscaler,Enterprise Software,Infrastructure Security,AIQ
+ZS,Zscaler ,Enterprise Software,Infrastructure Security,HACK
+ZS,Zscaler ,Enterprise Software,Infrastructure Security,CIBR
+ZS,Zscaler ,Enterprise Software,Infrastructure Security,WCLD
+ZS,Zscaler ,Enterprise Software,Infrastructure Security,SKYY
