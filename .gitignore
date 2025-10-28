@@ -14,6 +14,7 @@ dist/
 # Environment
 .env
 .env.local
+.venv
 
 # IDEs
 .vscode/
@@ -38,4 +39,4 @@ logs/
 htmlcov/
 
 # Documentation
-docs/_build/
+docs/_build/.venv
