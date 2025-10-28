@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "project-chronos"
+version = "0.1.0"
+description = "Production-grade macroeconomic data platform"
+authors = ["Your Name <axiologycapital@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "^2.0.23"
+psycopg2-binary = "^2.9.9"
+requests = "^2.31.0"
+pandas = "^2.1.4"
+python-dotenv = "^1.0.0"
+pydantic = "^2.5.3"
+pydantic-settings = "^2.1.0"
+structlog = "^23.3.0"
+click = "^8.1.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+black = "^23.12.1"
+ruff = "^0.1.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

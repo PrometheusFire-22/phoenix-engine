@@ -11,7 +11,7 @@ build/
 dist/
 *.egg-info/
 
-# Environment variables
+# Environment
 .env
 .env.local
 
