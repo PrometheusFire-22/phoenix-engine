@@ -38,7 +38,6 @@ services:
         condition: service_healthy
     networks:
       - chronos-network
-    command: sleep infinity
     profiles:
       - dev
 
