@@ -1,0 +1,45 @@
+{
+  "name": "Project Chronos",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+  
+  "forwardPorts": [5432],
+  
+  "postCreateCommand": "pip install -e . && pip install -r requirements.txt",
+  
+  "containerEnv": {
+    "PYTHONPATH": "/workspace/src",
+    "DATABASE_HOST": "timescaledb"
+  },
+  
+  "remoteUser": "vscode"
+}
