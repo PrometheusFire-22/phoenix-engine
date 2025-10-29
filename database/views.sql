@@ -26,13 +26,18 @@ DROP VIEW IF EXISTS analytics.macro_indicators_latest CASCADE;
 DROP VIEW IF EXISTS analytics.fx_rates_normalized CASCADE;
 
 -- ============================================================================
--- VIEW 1: FX Rates Normalized
+-- VIEW: FX Rates Normalized (CORRECTED with Cross-Rate Calculations)
 -- ============================================================================
--- Purpose: Standardize all FX rates to "USD per 1 unit of foreign currency"
--- Handles: FRED DEX* series and Bank of Canada FX* series
+-- Purpose: Standardize ALL FX rates to "USD per 1 unit of foreign currency"
+-- 
+-- Data Sources:
+-- - FRED DEX* series: Some are USD-based, some are not
+-- - Bank of Canada FX* series: ALL are CAD-based (require cross-rate conversion)
+--
+-- Key Fix: Non-USD rates now use date-aware cross-rate calculation
 -- ============================================================================
 
-CREATE VIEW analytics.fx_rates_normalized AS
+CREATE OR REPLACE VIEW analytics.fx_rates_normalized AS
 WITH raw_fx AS (
     SELECT 
         eo.observation_date,
@@ -46,81 +51,153 @@ WITH raw_fx AS (
     JOIN metadata.series_metadata sm ON eo.series_id = sm.series_id
     JOIN metadata.data_sources ds ON sm.source_id = ds.source_id
     WHERE 
-        -- Match ALL FX series using pattern matching
         (sm.source_series_id LIKE 'DEX%' OR sm.source_series_id LIKE 'FX%')
         AND eo.value IS NOT NULL
-        AND eo.value != 0  -- Prevent division by zero
+        AND eo.value != 0
+),
+-- Extract USD/CAD rate for cross-rate calculations
+usd_cad_rates AS (
+    SELECT 
+        observation_date,
+        -- FXUSDCAD is CAD per USD, so invert to get USD per CAD
+        1.0 / raw_value as usd_per_cad
+    FROM raw_fx
+    WHERE source_series_id = 'FXUSDCAD'
+),
+-- Also get FRED's USD/CAD rate for cross-validation
+fred_usd_cad AS (
+    SELECT 
+        observation_date,
+        -- DEXCAUS is also CAD per USD, invert to get USD per CAD
+        1.0 / raw_value as usd_per_cad
+    FROM raw_fx
+    WHERE source_series_id = 'DEXCAUS'
 )
 SELECT 
-    observation_date,
-    source_series_id,
-    series_id,
-    source_name,
-    raw_value,
-    geography,
+    rf.observation_date,
+    rf.source_series_id,
+    rf.series_id,
+    rf.source_name,
+    rf.raw_value,
+    rf.geography,
     
-    -- Standardized value: USD per 1 unit of foreign currency
+    -- ========================================================================
+    -- CRITICAL: Correct normalization to USD per FX
+    -- ========================================================================
     CASE 
-        -- FRED: These are already USD per 1 FX (no transformation)
-        WHEN source_series_id IN ('DEXUSEU', 'DEXUSUK', 'DEXUSAL') THEN raw_value
+        -- ====================================================================
+        -- Group 1: FRED rates already in USD per FX (no conversion needed)
+        -- ====================================================================
+        WHEN rf.source_series_id IN ('DEXUSEU', 'DEXUSUK', 'DEXUSAL', 'DEXUSNZ') 
+            THEN rf.raw_value
         
-        -- FRED: These are FX per 1 USD (invert to get USD per FX)
-        WHEN source_series_id LIKE 'DEXCA%'   -- DEXCAUS = CAD per USD
-             OR source_series_id LIKE 'DEXJP%' -- DEXJPUS = JPY per USD
-             OR source_series_id LIKE 'DEXCH%' -- DEXCHUS = CHF per USD
-             OR source_series_id LIKE 'DEXMX%' -- DEXMXUS = MXN per USD
-            THEN 1.0 / raw_value
+        -- ====================================================================
+        -- Group 2: FRED rates in FX per USD (simple inversion)
+        -- ====================================================================
+        WHEN rf.source_series_id IN ('DEXCAUS', 'DEXJPUS', 'DEXCHUS', 'DEXMXUS', 
+                                      'DEXINUS', 'DEXKOUS', 'DEXSZUS', 'DEXTHUS',
+                                      'DEXBZUS', 'DEXSFUS', 'DEXVZUS', 'DEXMAUS')
+            THEN 1.0 / rf.raw_value
         
-        -- Bank of Canada: ALL FX* series are foreign currency per CAD
-        -- To get USD per FX, we invert (this gives CAD per FX, then multiply by USD/CAD to get USD per FX)
-        -- Simplified: For now, just invert to show relative strength
-        WHEN source_series_id LIKE 'FX%' THEN 1.0 / raw_value
+        -- ====================================================================
+        -- Group 3: Bank of Canada USD/CAD (simple inversion)
+        -- ====================================================================
+        WHEN rf.source_series_id = 'FXUSDCAD'
+            THEN 1.0 / rf.raw_value
         
-        -- Default: no transformation
-        ELSE raw_value
+        -- ====================================================================
+        -- Group 4: Bank of Canada non-USD rates (CROSS-RATE CALCULATION)
+        -- ====================================================================
+        -- Formula: USD per FX = (CAD per FX) × (USD per CAD)
+        -- Example: USD per EUR = (1.627 CAD/EUR) × (0.7164 USD/CAD) = 1.1656 USD/EUR
+        -- ====================================================================
+        WHEN rf.source_series_id LIKE 'FX%' AND rf.source_series_id != 'FXUSDCAD'
+            THEN rf.raw_value * COALESCE(ucr.usd_per_cad, 0)
+        
+        -- Default: return raw value (shouldn't hit this)
+        ELSE rf.raw_value
     END as usd_per_fx,
     
-    -- Flag if value was inverted
+    -- ========================================================================
+    -- Metadata: Transformation applied
+    -- ========================================================================
     CASE 
-        WHEN source_series_id IN ('DEXCAUS', 'DEXJPUS', 'DEXCHUS', 'DEXMXUS') 
-             OR source_series_id LIKE 'FX%' 
-            THEN TRUE
-        ELSE FALSE
-    END as was_inverted,
+        WHEN rf.source_series_id IN ('DEXUSEU', 'DEXUSUK', 'DEXUSAL', 'DEXUSNZ') 
+            THEN 'none'
+        WHEN rf.source_series_id IN ('DEXCAUS', 'DEXJPUS', 'DEXCHUS', 'DEXMXUS', 'FXUSDCAD')
+            THEN 'inverted'
+        WHEN rf.source_series_id LIKE 'FX%' AND rf.source_series_id != 'FXUSDCAD'
+            THEN 'cross_rate'
+        ELSE 'unknown'
+    END as transformation_type,
     
-    -- Human-readable description
+    -- ========================================================================
+    -- Human-readable description (CORRECTED)
+    -- ========================================================================
     CASE 
-        -- FRED series
-        WHEN source_series_id = 'DEXUSEU' THEN 'USD per EUR (FRED)'
-        WHEN source_series_id = 'DEXUSUK' THEN 'USD per GBP (FRED)'
-        WHEN source_series_id = 'DEXUSAL' THEN 'USD per AUD (FRED)'
-        WHEN source_series_id = 'DEXCAUS' THEN 'USD per CAD (FRED, inverted from raw)'
-        WHEN source_series_id = 'DEXJPUS' THEN 'USD per JPY (FRED, inverted from raw)'
-        WHEN source_series_id = 'DEXCHUS' THEN 'USD per CHF (FRED, inverted from raw)'
-        WHEN source_series_id = 'DEXMXUS' THEN 'USD per MXN (FRED, inverted from raw)'
+        -- FRED: Native USD rates
+        WHEN rf.source_series_id = 'DEXUSEU' THEN 'USD per EUR'
+        WHEN rf.source_series_id = 'DEXUSUK' THEN 'USD per GBP'
+        WHEN rf.source_series_id = 'DEXUSAL' THEN 'USD per AUD'
+        WHEN rf.source_series_id = 'DEXUSNZ' THEN 'USD per NZD'
         
-        -- Bank of Canada series
-        WHEN source_series_id = 'FXUSDCAD' THEN 'USD per CAD (Bank of Canada, inverted from raw)'
-        WHEN source_series_id = 'FXEURCAD' THEN 'EUR per CAD inverted (Bank of Canada)'
-        WHEN source_series_id = 'FXGBPCAD' THEN 'GBP per CAD inverted (Bank of Canada)'
-        WHEN source_series_id = 'FXJPYCAD' THEN 'JPY per CAD inverted (Bank of Canada)'
+        -- FRED: Inverted rates
+        WHEN rf.source_series_id = 'DEXCAUS' THEN 'USD per CAD (FRED)'
+        WHEN rf.source_series_id = 'DEXJPUS' THEN 'USD per 100 JPY (FRED)'
+        WHEN rf.source_series_id = 'DEXCHUS' THEN 'USD per CHF (FRED)'
+        WHEN rf.source_series_id = 'DEXMXUS' THEN 'USD per MXN (FRED)'
         
-        -- Fallback for any other FX series
-        ELSE 'FX rate: ' || source_series_id || ' (check raw value direction)'
-    END as rate_description
-FROM raw_fx;
+        -- Bank of Canada: USD/CAD
+        WHEN rf.source_series_id = 'FXUSDCAD' THEN 'USD per CAD (Bank of Canada)'
+        
+        -- Bank of Canada: Cross-rates (CORRECTED DESCRIPTIONS)
+        WHEN rf.source_series_id = 'FXEURCAD' THEN 'USD per EUR (via CAD cross-rate)'
+        WHEN rf.source_series_id = 'FXGBPCAD' THEN 'USD per GBP (via CAD cross-rate)'
+        WHEN rf.source_series_id = 'FXJPYCAD' THEN 'USD per 100 JPY (via CAD cross-rate)'
+        WHEN rf.source_series_id = 'FXCHFCAD' THEN 'USD per CHF (via CAD cross-rate)'
+        WHEN rf.source_series_id = 'FXAUDCAD' THEN 'USD per AUD (via CAD cross-rate)'
+        
+        -- Fallback
+        ELSE 'USD per ' || SUBSTRING(rf.source_series_id FROM 3)
+    END as rate_description,
+    
+    -- Additional metadata for transparency
+    ucr.usd_per_cad as usd_cad_rate_used,
+    rf.raw_value as original_raw_value
+    
+FROM raw_fx rf
+LEFT JOIN usd_cad_rates ucr ON rf.observation_date = ucr.observation_date
+WHERE 
+    -- Only include rows where we have USD/CAD rate for cross-rate calculations
+    (rf.source_series_id NOT LIKE 'FX%' 
+     OR rf.source_series_id = 'FXUSDCAD'
+     OR (rf.source_series_id LIKE 'FX%' AND ucr.usd_per_cad IS NOT NULL));
 
 COMMENT ON VIEW analytics.fx_rates_normalized IS 
-'Normalized FX rates with consistent directionality.
-TARGET: All values represent USD per 1 unit of foreign currency (where possible).
+'FX rates normalized to USD per 1 unit of foreign currency.
 
-Transformation rules:
-- FRED DEXUSEU/DEXUSUK: Already USD per FX (no change)
-- FRED DEXCAUS/DEXJPUS: Raw is FX per USD → inverted to USD per FX
-- Bank of Canada FX*: Raw is FX per CAD → inverted for consistency
+Transformation Methods:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. NONE: Already USD-based (FRED DEXUSEU, DEXUSUK, etc.)
+   - Raw value = USD per FX
+   
+2. INVERTED: FX per USD → invert to get USD per FX
+   - FRED DEXCAUS, DEXJPUS, etc.
+   - Bank of Canada FXUSDCAD
+   - Formula: usd_per_fx = 1 / raw_value
+   
+3. CROSS_RATE: CAD-based → convert via USD/CAD rate
+   - Bank of Canada FXEURCAD, FXGBPCAD, FXJPYCAD, etc.
+   - Formula: usd_per_fx = (CAD per FX) × (USD per CAD)
+   - Example: FXEURCAD = 1.627 CAD/EUR × 0.7164 USD/CAD = 1.1656 USD/EUR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Always use this view for cross-currency analysis.
-Raw data remains unchanged in economic_observations table.';
+Data Quality Notes:
+- Cross-rate calculations require matching observation_date for USD/CAD
+- Rows without USD/CAD rate on same date are excluded (rare for daily data)
+- Column "usd_cad_rate_used" shows the USD/CAD rate applied for transparency
+
+Always query this view for cross-currency analysis, never use raw data directly.';
 
 -- ============================================================================
 -- VIEW 2: Macro Indicators Latest (with Growth Calculations)
