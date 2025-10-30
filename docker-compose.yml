@@ -1,3 +1,5 @@
+# docker-compose.yml
+# Purpose: Provides TimescaleDB as a backing service for Dev Container
 services:
   timescaledb:
     image: timescale/timescaledb:latest-pg16
@@ -21,27 +23,7 @@ services:
     networks:
       - chronos-network
 
-  app:
-    build:
-      context: .
-      dockerfile: .devcontainer/Dockerfile
-    container_name: chronos-app
-    volumes:
-      - .:/workspace:cached
-      - ./.env:/workspace/.env:ro
-    environment:
-      DATABASE_HOST: timescaledb
-      DATABASE_PORT: 5432
-      PYTHONPATH: /workspace/src
-    depends_on:
-      timescaledb:
-        condition: service_healthy
-    networks:
-      - chronos-network
-    command: sleep infinity
-    profiles:
-      - dev
-
+  # pgAdmin remains available but optional (no profile needed now)
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: chronos-pgadmin
