@@ -1,15 +1,28 @@
 {
-  "name": "Project Chronos",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace",
+  "name": "Project Chronos Dev Container",
   
+  // Build configuration - no longer references docker-compose for app
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  
+  // Start docker-compose services that dev container depends on
+  "dockerComposeFile": "../docker-compose.yml",
+  "runServices": ["timescaledb"],
+  
+  // Workspace configuration
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  
+  // Python feature from devcontainers
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.11"
     }
   },
   
+  // VS Code customizations
   "customizations": {
     "vscode": {
       "settings": {
@@ -18,7 +31,14 @@
         "editor.formatOnSave": true,
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": false,
-        "python.linting.flake8Enabled": true
+        "python.linting.flake8Enabled": true,
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/**": true,
+          "**/.venv/**": true,
+          "**/venv/**": true
+        }
       },
       "extensions": [
         "ms-python.python",
@@ -27,19 +47,38 @@
         "charliermarsh.ruff",
         "mtxr.sqltools",
         "mtxr.sqltools-driver-pg",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "mhutchie.git-graph"
       ]
     }
   },
   
+  // Network configuration - connect to docker-compose network
+  "runArgs": [
+    "--network=project-chronos_chronos-network"
+  ],
+  
+  // Port forwarding
   "forwardPorts": [5432],
   
-  "postCreateCommand": "pip install -e . && pip install -r requirements.txt",
+  // Post-creation setup
+  "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -r requirements.txt",
   
+  // Environment variables
   "containerEnv": {
     "PYTHONPATH": "/workspace/src",
-    "DATABASE_HOST": "timescaledb"
+    "DATABASE_HOST": "chronos-db",
+    "DATABASE_PORT": "5432",
+    "DATABASE_NAME": "${localEnv:DATABASE_NAME}",
+    "DATABASE_USER": "${localEnv:DATABASE_USER}",
+    "DATABASE_PASSWORD": "${localEnv:DATABASE_PASSWORD}"
   },
   
-  "remoteUser": "vscode"
+  // Run as vscode user
+  "remoteUser": "vscode",
+  
+  // Mounts
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
+  ]
 }

@@ -57,7 +57,7 @@ ENV/
 pgdata/
 
 # Logs
-logs/
+# logs/ --- Commented out to commit gitkeep file 
 *.log
 
 # OS
@@ -71,3 +71,10 @@ database/backups/
 
 # Docker
 .dockerignore
+backups/*.sql
+backups/*.sql.gz
+backups/daily/
+backups/weekly/
+backups/monthly/
+backups/logs/*.log
+!backups/logs/.gitkeep
