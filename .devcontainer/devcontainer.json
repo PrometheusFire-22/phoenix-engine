@@ -10,6 +10,8 @@
     }
   },
   
+  "initializeCommand": "docker compose up -d timescaledb",
+  
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
   
