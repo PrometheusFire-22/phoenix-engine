@@ -1,34 +1,50 @@
 {
-  "name": "Project Chronos Dev Container",
+  "name": "Project Chronos - Dev Container",
   
-  // Build configuration - no longer references docker-compose for app
   "build": {
     "dockerfile": "Dockerfile",
-    "context": "."
-  },
-  
-  // Start docker-compose services that dev container depends on
-  "dockerComposeFile": "../docker-compose.yml",
-  "runServices": ["timescaledb"],
-  
-  // Workspace configuration
-  "workspaceFolder": "/workspace",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-  
-  // Python feature from devcontainers
-  "features": {
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11"
+    "context": ".",
+    "args": {
+      "USER_UID": "1000",
+      "USER_GID": "1000"
     }
   },
   
-  // VS Code customizations
+  "initializeCommand": "docker compose up -d timescaledb",
+  
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  
+  "runArgs": [
+    "--network=project-chronos_chronos-network",
+    "--name=chronos-devcontainer"
+  ],
+  
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
+  ],
+  
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11",
+      "installTools": true
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    }
+  },
+  
   "customizations": {
     "vscode": {
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.formatting.provider": "black",
         "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": false,
         "python.linting.flake8Enabled": true,
@@ -37,8 +53,11 @@
           "**/.git/subtree-cache/**": true,
           "**/node_modules/**": true,
           "**/.venv/**": true,
-          "**/venv/**": true
-        }
+          "**/venv/**": true,
+          "**/__pycache__/**": true,
+          "**/.pytest_cache/**": true
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
       },
       "extensions": [
         "ms-python.python",
@@ -48,37 +67,32 @@
         "mtxr.sqltools",
         "mtxr.sqltools-driver-pg",
         "eamodio.gitlens",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "donjayamanne.githistory"
       ]
     }
   },
   
-  // Network configuration - connect to docker-compose network
-  "runArgs": [
-    "--network=project-chronos_chronos-network"
-  ],
-  
-  // Port forwarding
   "forwardPorts": [5432],
-  
-  // Post-creation setup
-  "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -r requirements.txt",
-  
-  // Environment variables
-  "containerEnv": {
-    "PYTHONPATH": "/workspace/src",
-    "DATABASE_HOST": "chronos-db",
-    "DATABASE_PORT": "5432",
-    "DATABASE_NAME": "${localEnv:DATABASE_NAME}",
-    "DATABASE_USER": "${localEnv:DATABASE_USER}",
-    "DATABASE_PASSWORD": "${localEnv:DATABASE_PASSWORD}"
+  "portsAttributes": {
+    "5432": {
+      "label": "PostgreSQL/TimescaleDB",
+      "onAutoForward": "notify"
+    }
   },
   
-  // Run as vscode user
-  "remoteUser": "vscode",
+  "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -r requirements.txt",
   
-  // Mounts
-  "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
-  ]
+  "containerEnv": {
+    "PYTHONPATH": "/workspace/src",
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "DATABASE_HOST": "chronos-db",
+    "DATABASE_PORT": "5432",
+    "DATABASE_NAME": "chronos_db",
+    "DATABASE_USER": "prometheus",
+    "DATABASE_PASSWORD": "Zarathustra22!"
+  },
+  
+  "remoteUser": "vscode"
 }
