@@ -89,9 +89,9 @@
     "PYTHONDONTWRITEBYTECODE": "1",
     "DATABASE_HOST": "chronos-db",
     "DATABASE_PORT": "5432",
-    "DATABASE_NAME": "${localEnv:DATABASE_NAME}",
-    "DATABASE_USER": "${localEnv:DATABASE_USER}",
-    "DATABASE_PASSWORD": "${localEnv:DATABASE_PASSWORD}"
+    "DATABASE_NAME": "chronos_db",
+    "DATABASE_USER": "prometheus",
+    "DATABASE_PASSWORD": "Zarathustra22!"
   },
   
   "remoteUser": "vscode"
