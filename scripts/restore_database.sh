@@ -10,7 +10,7 @@ if [ $# -eq 0 ]; then
     echo "Usage: $0 <backup_file.sql.gz>"
     echo ""
     echo "Available backups:"
-    ls -lh ~/coding/finance/project-chronos/backups/daily/*.sql.gz 2>/dev/null | tail -10 || echo "No backups found"
+    ls -lh /workspace/backups/daily/*.sql.gz 2>/dev/null | tail -10 || echo "No backups found"
     exit 1
 fi
 

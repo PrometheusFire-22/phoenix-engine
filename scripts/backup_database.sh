@@ -6,7 +6,7 @@ set -euo pipefail
 # ============================================================================
 
 # Configuration
-BACKUP_DIR="/home/prometheus/coding/finance/project-chronos/backups"
+BACKUP_DIR="/workspace/backups"
 CONTAINER_NAME="chronos-db"
 DB_NAME="chronos_db"
 DB_USER="prometheus"
