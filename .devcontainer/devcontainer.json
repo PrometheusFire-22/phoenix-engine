@@ -81,7 +81,7 @@
     }
   },
   
-  "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -r requirements.txt",
+  "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -r requirements.txt && (crontab -l 2>/dev/null; echo '0 10 * * * /workspace/scripts/daily_data_update.sh >> /workspace/logs/cron_daily.log 2>&1') | crontab - && sudo service cron start",
   
   "containerEnv": {
     "PYTHONPATH": "/workspace/src",
