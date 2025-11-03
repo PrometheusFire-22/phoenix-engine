@@ -1,0 +1,44 @@
+[run]
+source = src/chronos
+omit =
+    */tests/*
+    */test_*.py
+    */.venv/*
+    */venv/*
+    */site-packages/*
+    */setup.py
+    */__pycache__/*
+    */migrations/*
+branch = True
+parallel = False
+
+[report]
+show_missing = True
+precision = 2
+skip_covered = False
+fail_under = 75
+sort = Cover
+exclude_lines =
+    pragma: no cover
+    raise AssertionError
+    raise NotImplementedError
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+    if __name__ == .__main__.:
+    if __name__ == "__main__":
+    def __repr__
+    def __str__
+    \.\.\.
+
+[html]
+directory = htmlcov
+title = Project Chronos Coverage Report
+
+[xml]
+output = coverage.xml
+
+[json]
+output = coverage.json
+pretty_print = True
