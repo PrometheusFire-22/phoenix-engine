@@ -24,12 +24,12 @@ log() {
 # log "=========================================="
 
 # # Pre-Update Backup
-# log "Creating pre-update backup..."
-# if /workspace/scripts/backup_database.sh >> "$LOG_FILE" 2>&1; then
-#     log "✅ Backup completed"
-# else
-#     log "⚠️ Backup failed - continuing anyway"
-# fi
+log "Creating pre-update backup..."
+if /workspace/scripts/backup_database.sh >> "$LOG_FILE" 2>&1; then
+    log "✅ Backup completed"
+else
+    log "⚠️ Backup failed - continuing anyway"
+fi
 
 # Track failures
 FAILED=0
@@ -81,7 +81,7 @@ fi
 # Data Quality Check
 log "Running data quality checks..."
 psql -h chronos-db -U prometheus -d chronos_db << 'SQL' >> "$LOG_FILE" 2>&1
-SELECT 
+SELECT
     freshness_status,
     COUNT(*) as series_count
 FROM analytics.data_quality_dashboard

@@ -8,7 +8,7 @@ repos:
   # Code Formatting
   # ============================================================================
   - repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 25.9.0
     hooks:
       - id: black
         name: Format Python code (black)
@@ -19,7 +19,7 @@ repos:
   # Linting
   # ============================================================================
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
+    rev: v0.14.3
     hooks:
       - id: ruff
         name: Lint Python code (ruff)
@@ -29,7 +29,7 @@ repos:
   # General File Quality
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         name: Remove trailing whitespace
@@ -65,7 +65,7 @@ repos:
   # Python-Specific Checks
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-ast
         name: Validate Python AST
@@ -81,7 +81,7 @@ repos:
   # Security Checks
   # ============================================================================
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
+    rev: 1.8.6
     hooks:
       - id: bandit
         name: Security vulnerability scanner
