@@ -24,8 +24,8 @@ def test_session(test_engine):
     """Create isolated test database session."""
     Session = sessionmaker(bind=test_engine)
     session = Session()
-    
+
     yield session
-    
+
     session.rollback()
     session.close()

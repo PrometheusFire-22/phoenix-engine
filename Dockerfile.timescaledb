@@ -1,0 +1,65 @@
+FROM postgis/postgis:16-3.4-alpine
+
+LABEL maintainer="PrometheusFire-22"
+LABEL description="Multi-modal database: TimescaleDB + PostGIS + pgvector + Apache AGE"
+LABEL version="1.0.0"
+
+USER root
+
+RUN apk update && apk add --no-cache \
+    build-base \
+    git \
+    wget \
+    cmake \
+    postgresql16-dev \
+    clang15 \
+    llvm15 \
+    openssl-dev \
+    ca-certificates \
+    curl \
+    flex \
+    bison \
+    perl
+
+RUN cd /tmp && \
+    wget https://github.com/timescale/timescaledb/archive/refs/tags/2.17.2.tar.gz && \
+    tar xzf 2.17.2.tar.gz && \
+    cd timescaledb-2.17.2 && \
+    ./bootstrap -DREGRESS_CHECKS=OFF -DPROJECT_INSTALL_METHOD="docker" && \
+    cd build && make && make install && \
+    cd / && rm -rf /tmp/timescaledb-2.17.2 /tmp/2.17.2.tar.gz
+
+RUN cd /tmp && \
+    wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.5.1.tar.gz && \
+    tar xzf v0.5.1.tar.gz && \
+    cd pgvector-0.5.1 && \
+    make && \
+    make install && \
+    cd / && rm -rf /tmp/pgvector-0.5.1 /tmp/v0.5.1.tar.gz
+
+# ============================================================================
+# Install Apache AGE from master branch
+# ============================================================================
+RUN cd /tmp && \
+    git clone --branch master --depth 1 https://github.com/apache/age.git && \
+    cd age && \
+    make PG_CONFIG=/usr/bin/pg_config && \
+    make PG_CONFIG=/usr/bin/pg_config install && \
+    echo "Creating symlinks for AGE..." && \
+    ln -s /usr/share/postgresql16/extension/age.control /usr/local/share/postgresql/extension/age.control && \
+    ln -s /usr/share/postgresql16/extension/age--1.6.0.sql /usr/local/share/postgresql/extension/age--1.6.0.sql && \
+    ln -s /usr/lib/postgresql16/age.so /usr/local/lib/postgresql/age.so && \
+    echo "Verifying AGE installation..." && \
+    ls -la /usr/local/share/postgresql/extension/age* && \
+    ls -la /usr/local/lib/postgresql/age.so && \
+    cd / && rm -rf /tmp/age
+RUN echo "shared_preload_libraries = 'timescaledb,pg_stat_statements'" >> /usr/local/share/postgresql/postgresql.conf.sample && \
+    echo "timescaledb.telemetry_level = off" >> /usr/local/share/postgresql/postgresql.conf.sample
+
+RUN echo "Verifying extensions..." && \
+    ls -la /usr/local/share/postgresql/extension/ | grep -E "postgis|timescaledb|vector|age" && \
+    echo "✅ All extensions verified"
+
+USER postgres
+EXPOSE 5432
+CMD ["postgres"]

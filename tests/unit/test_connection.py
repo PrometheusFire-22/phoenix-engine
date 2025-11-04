@@ -2,7 +2,6 @@
 Project Chronos: Database Connection Tests
 """
 
-import pytest
 from chronos.database.connection import verify_database_connection
 
 

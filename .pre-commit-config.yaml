@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: black
         name: Format Python code (black)
-        language_version: python3.11
+        language_version: python3.12
         args: [--line-length=100]
 
   # ============================================================================
@@ -124,7 +124,7 @@ repos:
 # Configuration
 # ============================================================================
 default_language_version:
-  python: python3.11
+  python: python3.12
 
 # Fail fast on first error
 fail_fast: false
