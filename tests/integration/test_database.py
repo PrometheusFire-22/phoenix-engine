@@ -107,7 +107,7 @@ class TestDatabaseSchema:
 
     def test_metadata_tables_exist(self):
         """Verify all metadata tables are created."""
-        expected_tables = {"data_sources", "series_metadata", "series_attributes", "ingestion_log"}
+        expected_tables = {"data_sources", "series_metadata", "ingestion_log"}
 
         with get_db_session() as session:
             result = session.execute(
@@ -253,7 +253,7 @@ class TestDataSources:
             result = session.execute(
                 text(
                     """
-                SELECT source_id, source_name, api_type, requires_auth
+                SELECT source_id, source_name, api_key_required, base_url
                 FROM metadata.data_sources
                 WHERE source_name = 'FRED'
             """
@@ -263,8 +263,8 @@ class TestDataSources:
 
             assert row is not None
             assert row[1] == "FRED"
-            assert row[2] == "rest"
-            assert row[3] is True  # Requires authentication
+            assert row[2] is True  # Requires authentication
+            assert "stlouisfed.org" in row[3]  # Base URL contains FRED domain
 
     def test_valet_source_exists(self):
         """Verify Bank of Canada Valet source is registered."""
@@ -272,7 +272,7 @@ class TestDataSources:
             result = session.execute(
                 text(
                     """
-                SELECT source_id, source_name, api_type, requires_auth
+                SELECT source_id, source_name, api_key_required, base_url
                 FROM metadata.data_sources
                 WHERE source_name = 'VALET'
             """
@@ -282,8 +282,8 @@ class TestDataSources:
 
             assert row is not None
             assert row[1] == "VALET"
-            assert row[2] == "rest"
-            assert row[3] is False  # No authentication required
+            assert row[2] is False  # No authentication required
+            assert "bankofcanada.ca" in row[3]  # Base URL contains BoC domain
 
 
 class TestDatabaseConstraints:

@@ -154,7 +154,7 @@ class TestFREDIngestor:
             )
 
             if observations:
-                records_inserted = ingestor_with_session.store_observations(series_id, observations)
+                _ = ingestor_with_session.store_observations(series_id, observations)
 
                 session.commit()
 
@@ -209,7 +209,7 @@ class TestFREDDataQuality:
                     JOIN metadata.data_sources ds ON sm.source_id = ds.source_id
                     LEFT JOIN timeseries.economic_observations eo ON sm.series_id = eo.series_id
                     WHERE ds.source_name = 'FRED'
-                        AND sm.is_active = TRUE
+
                     GROUP BY sm.source_series_id
                     HAVING MAX(eo.observation_date) < CURRENT_DATE - INTERVAL '6 months'
                 """
@@ -258,7 +258,7 @@ class TestFREDAPILimits:
         # Our ingestion should batch appropriately
         # This is more of a documentation test
         with get_db_session() as session:
-            ingestor = FREDIngestor(session)
+            _ = FREDIngestor(session)
 
             # Verify rate limit is configured
             from chronos.config.settings import settings

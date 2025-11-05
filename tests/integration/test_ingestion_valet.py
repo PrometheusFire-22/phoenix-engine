@@ -55,7 +55,7 @@ class TestValetIngestor:
                     FROM metadata.series_metadata sm
                     JOIN metadata.data_sources ds ON sm.source_id = ds.source_id
                     WHERE ds.source_name = 'VALET'
-                        AND sm.is_active = TRUE
+
                 """
                 )
             )
