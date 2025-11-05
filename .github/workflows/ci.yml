@@ -36,6 +36,7 @@ jobs:
           ruff check src/ tests/ --output-format=github
           bandit -r src/ -ll
 
+# In .github/workflows/ci.yml, replace the entire 'test-and-validate' job
   test-and-validate:
     name: Test Suite and Schema Validation
     runs-on: ubuntu-latest
@@ -55,7 +56,7 @@ jobs:
             ${{ env.CUSTOM_DB_IMAGE }}
       - name: Wait for PostgreSQL to be ready
         run: |
-          sleep 5 # Initial wait
+          sleep 5
           for i in {1..30}; do
             docker exec ${{ env.DB_CONTAINER_NAME }} pg_isready -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} && break
             echo "Waiting for PostgreSQL..."
@@ -73,6 +74,9 @@ jobs:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/schema.sql
+          # --- ADDED THIS LINE TO RUN THE NEW SEED SCRIPT ---
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/seeds/001_populate_data_sources.sql
+          # ---
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/003_populate_series_types.sql
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/004_add_geospatial_coordinates.sql
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/views.sql
