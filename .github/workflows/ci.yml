@@ -116,28 +116,61 @@ jobs:
 
       - name: Initialize database schema
         env:
-          DATABASE_URL: postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@localhost:5432/${{ env.DATABASE_NAME }}
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
-          psql $DATABASE_URL -f database/schema.sql
-          psql $DATABASE_URL -f database/views.sql
-          psql $DATABASE_URL -f database/analytics_views.sql
+          # 1. Core schema (tables, extensions, hypertables)
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -f database/schema.sql
+          
+          # 2. Apply migrations (CRITICAL - series_type, coordinates)
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -f database/migrations/003_populate_series_types.sql
+          
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -f database/migrations/004_add_geospatial_coordinates.sql
+          
+          # 3. Analytics views (depends on series_type)
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -f database/views.sql
+          
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -f database/analytics_views.sql
+          
+          # 4. Verify schema
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
+            -c "SELECT COUNT(*) FROM metadata.series_metadata WHERE series_type IS NOT NULL;"
 
       - name: Run unit tests
         env:
-          DATABASE_URL: postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@localhost:5432/${{ env.DATABASE_NAME }}
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_NAME: ${{ env.DATABASE_NAME }}
+          DATABASE_USER: ${{ env.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml
 
       - name: Run integration tests
         env:
-          DATABASE_URL: postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@localhost:5432/${{ env.DATABASE_NAME }}
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_NAME: ${{ env.DATABASE_NAME }}
+          DATABASE_USER: ${{ env.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           pytest tests/integration/ -v --tb=short --junit-xml=junit-integration.xml
 
       - name: Run tests with coverage
         env:
-          DATABASE_URL: postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@localhost:5432/${{ env.DATABASE_NAME }}
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_NAME: ${{ env.DATABASE_NAME }}
+          DATABASE_USER: ${{ env.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           pytest --cov=src/chronos --cov-report=xml --cov-report=term-missing --cov-report=html
@@ -287,11 +320,3 @@ jobs:
           path: |
             safety-report.json
             pip-audit-report.json
-
-# =============================================================================
-# Status Checks (Required for Branch Protection)
-# =============================================================================
-# Configure these as required status checks in GitHub:
-# - lint
-# - test (Python 3.11)
-# - validate-schema
