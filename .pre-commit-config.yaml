@@ -106,10 +106,10 @@ repos:
     hooks:
       - id: pytest-quick
         name: Run fast unit tests
-        entry: pytest tests/unit/ -v --tb=short
+        entry: bash -c 'cd /home/prometheus/coding/finance/project-chronos && source venv/bin/activate && pytest tests/unit/ -x --tb=short --maxfail=3 -q'
         language: system
         pass_filenames: false
-        always_run: true
+        types: [python]
         stages: [pre-commit]
 
       - id: no-commit-to-main

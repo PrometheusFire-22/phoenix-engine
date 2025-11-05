@@ -17,4 +17,15 @@ setup(
         "structlog>=23.3.0",
         "click>=8.1.7",
     ],
+    extras_require={
+        "dev": [
+            "pytest>=7.4.3",
+            "pytest-cov>=4.1.0",
+            "black>=23.12.1",
+            "ruff>=0.1.9",
+            "bandit>=1.7.5",
+            "safety>=2.3.5",
+            "pip-audit>=2.6.1",
+        ],
+    },
 )
