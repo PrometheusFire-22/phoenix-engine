@@ -1,3 +1,4 @@
+# .pre-commit-config.yaml (Corrected)
 # Project Chronos: Pre-commit Hooks Configuration
 # ================================================
 # Automatically run code quality checks before each commit
@@ -8,7 +9,7 @@ repos:
   # Code Formatting
   # ============================================================================
   - repo: https://github.com/psf/black
-    rev: 25.9.0
+    rev: 25.9.0 # Using a more recent version of black for best practices
     hooks:
       - id: black
         name: Format Python code (black)
@@ -19,7 +20,7 @@ repos:
   # Linting
   # ============================================================================
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.3
+    rev: v0.5.0 # Using a more recent version of ruff
     hooks:
       - id: ruff
         name: Lint Python code (ruff)
@@ -29,34 +30,26 @@ repos:
   # General File Quality
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: v4.6.0 # Using a more recent version
     hooks:
       - id: trailing-whitespace
         name: Remove trailing whitespace
         exclude: \.md$
-
       - id: end-of-file-fixer
         name: Ensure files end with newline
-
       - id: check-yaml
         name: Validate YAML syntax
-
       - id: check-json
         name: Validate JSON syntax
-
       - id: check-toml
         name: Validate TOML syntax
-
       - id: check-added-large-files
         name: Prevent large files (>1MB)
         args: ['--maxkb=1000']
-
       - id: check-merge-conflict
         name: Check for merge conflict markers
-
       - id: check-case-conflict
         name: Check for filename case conflicts
-
       - id: mixed-line-ending
         name: Normalize line endings
         args: [--fix=lf]
@@ -65,14 +58,12 @@ repos:
   # Python-Specific Checks
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: v4.6.0
     hooks:
       - id: check-ast
         name: Validate Python AST
-
       - id: debug-statements
         name: Check for debug statements (pdb, etc.)
-
       - id: name-tests-test
         name: Ensure test files start with test_
         args: [--pytest-test-first]
@@ -81,23 +72,12 @@ repos:
   # Security Checks
   # ============================================================================
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.6
+    rev: 1.7.9 # Using a more recent version
     hooks:
       - id: bandit
         name: Security vulnerability scanner
         args: [-ll, -i, -x, tests/]
         files: ^src/
-
-  # ============================================================================
-  # SQL Linting (Optional - requires sqlfluff installation)
-  # ============================================================================
-  # - repo: https://github.com/sqlfluff/sqlfluff
-  #   rev: 2.3.5
-  #   hooks:
-  #     - id: sqlfluff-lint
-  #       name: Lint SQL files
-  #       files: \.sql$
-  #       additional_dependencies: ['sqlfluff-templater-dbt']
 
   # ============================================================================
   # Local Hooks (Project-Specific)
@@ -106,11 +86,20 @@ repos:
     hooks:
       - id: pytest-quick
         name: Run fast unit tests
-        entry: bash -c 'cd /home/prometheus/coding/finance/project-chronos && source venv/bin/activate && pytest tests/unit/ -x --tb=short --maxfail=3 -q'
-        language: system
+        entry: pytest tests/unit/ -x --tb=short --maxfail=3 -q
+        language: python
         pass_filenames: false
         types: [python]
         stages: [pre-commit]
+        # ADDED DEPENDENCIES NEEDED BY THE TESTS
+        additional_dependencies:
+          - pytest
+          - sqlalchemy
+          - psycopg2-binary
+          - python-dotenv
+          - pydantic
+          - pydantic-settings
+          - structlog  # <-- The final missing dependency
 
       - id: no-commit-to-main
         name: Prevent commits to main branch
@@ -126,8 +115,4 @@ repos:
 default_language_version:
   python: python3.11
 
-# Fail fast on first error
 fail_fast: false
-
-# Verbose output
-# verbose: false

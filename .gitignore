@@ -57,7 +57,7 @@ ENV/
 pgdata/
 
 # Logs
-# logs/ --- Commented out to commit gitkeep file 
+# logs/ --- Commented out to commit gitkeep file
 *.log
 
 # OS
@@ -78,3 +78,7 @@ backups/weekly/
 backups/monthly/
 backups/logs/*.log
 !backups/logs/.gitkeep
+
+# Frontend artifacts
+frontend/.venv
+frontend/__pycache__/

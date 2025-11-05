@@ -1,54 +1,76 @@
-#!/usr/bin/env python3
-"""Generate vector embeddings for series descriptions."""
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from sentence_transformers import SentenceTransformer
-from sqlalchemy import text
-from chronos.database.connection import get_db_session
+# src/scripts/generate_embeddings.py
+"""
+Generates and stores sentence embeddings for series descriptions.
+"""
 from chronos.utils.logging import get_logger
+from chronos.database.connection import get_db_session
+import sys
+import pandas as pd
+from sqlalchemy import text
+from sentence_transformers import SentenceTransformer
+
+# Ensure the 'src' directory is in the Python path
+sys.path.insert(0, ".")
 
 logger = get_logger(__name__)
 
-def generate_embeddings():
-    logger.info("Loading sentence-transformers model...")
+
+def generate_and_store_embeddings():
+    """
+    Fetches series without embeddings, generates them, and updates the database.
+    """
     model = SentenceTransformer("all-MiniLM-L6-v2")
-    logger.info("Model loaded successfully (384 dimensions)")
+    logger.info("SentenceTransformer model loaded.")
 
-    with get_db_session() as session:
-        result = session.execute(text("""
-            SELECT series_id, source_series_id, series_name, series_description
-            FROM metadata.series_metadata
-            WHERE series_description IS NOT NULL
-            ORDER BY series_id
-        """))
-        series = result.fetchall()
-        logger.info(f"Found {len(series)} series with descriptions")
-        
-        if not series:
-            logger.warning("No series found!")
-            return
+    query = text(
+        """
+        SELECT series_id, description
+        FROM metadata.series_metadata
+        WHERE description IS NOT NULL AND description_embedding IS NULL
+    """
+    )
 
-        descriptions = [row[3] for row in series]
-        logger.info("Generating embeddings...")
-        embeddings = model.encode(descriptions, show_progress_bar=True)
+    try:
+        with get_db_session() as session:
+            df = pd.read_sql_query(query, session.bind)
+            if df.empty:
+                logger.info("No new series descriptions to embed. Exiting.")
+                return
 
-        logger.info("Updating database...")
-        for (series_id, source_series_id, series_name, _), embedding in zip(series, embeddings):
-            # FIX: Use format string instead of :param syntax
-            session.execute(text(f"""
-                UPDATE metadata.series_metadata
-                SET description_embedding = '{embedding.tolist()}'::vector
-                WHERE series_id = {series_id}
-            """))
+            logger.info(f"Found {len(df)} series to process.")
+            embeddings = model.encode(df["description"].tolist(), show_progress_bar=True)
 
-        session.commit()
-        logger.info(f"✅ Successfully generated embeddings for {len(series)} series")
+            update_count = 0
+            for index, row in df.iterrows():
+                series_id = row["series_id"]
+                embedding = embeddings[index]
+
+                # --- CORRECTED SQL EXECUTION ---
+                # Use parameterized queries to prevent SQL injection
+                update_query = text(
+                    """
+                    UPDATE metadata.series_metadata
+                    SET description_embedding = :embedding
+                    WHERE series_id = :series_id
+                """
+                )
+                session.execute(
+                    update_query,
+                    {
+                        # Cast list to string for pgvector
+                        "embedding": str(embedding.tolist()),
+                        "series_id": series_id,
+                    },
+                )
+                update_count += 1
+
+            session.commit()
+            logger.info(f"Successfully updated {update_count} series with embeddings.")
+
+    except Exception as e:
+        logger.error(f"An error occurred during embedding generation: {e}", exc_info=True)
+        # The session context manager will handle rollback
+
 
 if __name__ == "__main__":
-    try:
-        generate_embeddings()
-    except Exception as e:
-        logger.error(f"Failed: {e}")
-        raise
+    generate_and_store_embeddings()

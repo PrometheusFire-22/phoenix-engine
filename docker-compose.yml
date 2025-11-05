@@ -1,3 +1,4 @@
+# docker-compose.yml
 services:
   timescaledb:
     build:
@@ -23,6 +24,24 @@ services:
       retries: 5
     networks:
       - chronos-network
+
+  # NEW SERVICE FOR THE DASH FRONT-END
+  frontend:
+    container_name: chronos-frontend
+    build:
+      context: ./frontend  # <-- Builds using a simple Dockerfile we define here
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./frontend:/app    # <-- Mounts your frontend code for live reloading
+      - ./src:/app/src      # <-- Makes the 'chronos' python src library available
+    depends_on:
+      timescaledb:
+        condition: service_healthy # <-- Ensures DB is ready before starting
+    networks:
+      - chronos-network
+    env_file:
+      - .env                # <-- Reuses your existing DB credentials
 
   pgadmin:
     image: dpage/pgadmin4:latest

@@ -1,0 +1,11 @@
+# Core Dash libraries
+dash
+dash-bootstrap-components
+
+# Data and visualization
+pandas
+plotly
+
+# Database connection
+psycopg2-binary
+python-dotenv
