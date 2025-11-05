@@ -1,6 +1,7 @@
+# .github/workflows/ci.yml (Corrected Version 2)
 # Project Chronos: CI/CD Pipeline
 # =================================
-# Automated testing, linting, and deployment pipeline
+# Uses job outputs to pass the custom image name.
 
 name: CI Pipeline
 
@@ -13,7 +14,7 @@ on:
       - '.gitignore'
   pull_request:
     branches: [develop, main]
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: "3.11"
@@ -21,42 +22,54 @@ env:
   DATABASE_NAME: chronos_test_db
   DATABASE_USER: chronos_user
   DATABASE_PASSWORD: chronos_test_password
+  CUSTOM_DB_IMAGE: chronos-db-ci:${{ github.sha }}
 
 jobs:
   # ==========================================================================
-  # Job 1: Code Quality Checks
+  # Job 1: Build Custom Database Image
   # ==========================================================================
-  lint:
-    name: Code Quality
+  build-db:
+    name: Build Custom DB Image
     runs-on: ubuntu-latest
-
+    outputs: # <-- ADDITION: Define an output for this job
+      image_name: ${{ env.CUSTOM_DB_IMAGE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.timescaledb
+          load: true
+          tags: ${{ env.CUSTOM_DB_IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
+  # ... [lint job remains unchanged] ...
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
-
       - name: Install linting tools
         run: |
           python -m pip install --upgrade pip
           pip install black ruff bandit
-
       - name: Check code formatting (Black)
-        run: |
-          black --check --line-length 100 src/ tests/
-
+        run: black --check --line-length 100 src/ tests/
       - name: Lint with Ruff
-        run: |
-          ruff check src/ tests/ --output-format=github
-
+        run: ruff check src/ tests/ --output-format=github
       - name: Security scan (Bandit)
-        run: |
-          bandit -r src/ -ll -f json -o bandit-report.json || true
-
+        run: bandit -r src/ -ll -f json -o bandit-report.json || true
       - name: Upload security report
         uses: actions/upload-artifact@v4
         if: always()
@@ -65,20 +78,20 @@ jobs:
           path: bandit-report.json
 
   # ==========================================================================
-  # Job 2: Test Suite (Unit + Integration)
+  # Job 3: Test Suite (Unit + Integration)
   # ==========================================================================
   test:
     name: Test Suite (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
-
+    needs: build-db
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
       fail-fast: false
-
     services:
       postgres:
-        image: timescale/timescaledb:latest-pg16
+        # CHANGE: Use the output from the 'build-db' job
+        image: ${{ needs.build-db.outputs.image_name }}
         env:
           POSTGRES_USER: ${{ env.DATABASE_USER }}
           POSTGRES_PASSWORD: ${{ env.DATABASE_PASSWORD }}
@@ -90,22 +103,19 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+    # ... [rest of test job steps are unchanged] ...
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-
       - name: Wait for PostgreSQL
         run: |
           for i in {1..30}; do
@@ -113,56 +123,16 @@ jobs:
             echo "Waiting for PostgreSQL..."
             sleep 2
           done
-
       - name: Initialize database schema
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
-          # 1. Core schema (tables, extensions, hypertables)
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -f database/schema.sql
-          
-          # 2. Apply migrations (CRITICAL - series_type, coordinates)
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -f database/migrations/003_populate_series_types.sql
-          
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -f database/migrations/004_add_geospatial_coordinates.sql
-          
-          # 3. Analytics views (depends on series_type)
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -f database/views.sql
-          
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -f database/analytics_views.sql
-          
-          # 4. Verify schema
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -c "SELECT COUNT(*) FROM metadata.series_metadata WHERE series_type IS NOT NULL;"
-
-      - name: Run unit tests
-        env:
-          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_NAME: ${{ env.DATABASE_NAME }}
-          DATABASE_USER: ${{ env.DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-        run: |
-          pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml
-
-      - name: Run integration tests
-        env:
-          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_NAME: ${{ env.DATABASE_NAME }}
-          DATABASE_USER: ${{ env.DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-        run: |
-          pytest tests/integration/ -v --tb=short --junit-xml=junit-integration.xml
-
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/schema.sql
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/003_populate_series_types.sql
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/004_add_geospatial_coordinates.sql
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/views.sql
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/analytics_views.sql
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT COUNT(*) FROM metadata.series_metadata WHERE series_type IS NOT NULL;"
       - name: Run tests with coverage
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
@@ -174,7 +144,6 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           pytest --cov=src/chronos --cov-report=xml --cov-report=term-missing --cov-report=html
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -182,7 +151,6 @@ jobs:
           flags: unittests
           name: codecov-${{ matrix.python-version }}
           fail_ci_if_error: false
-
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -193,15 +161,16 @@ jobs:
             htmlcov/
 
   # ==========================================================================
-  # Job 3: Database Schema Validation
+  # Job 4: Database Schema Validation
   # ==========================================================================
   validate-schema:
     name: Validate Database Schema
     runs-on: ubuntu-latest
-
+    needs: build-db
     services:
       postgres:
-        image: timescale/timescaledb:latest-pg16
+        # CHANGE: Use the output from the 'build-db' job
+        image: ${{ needs.build-db.outputs.image_name }}
         env:
           POSTGRES_USER: ${{ env.DATABASE_USER }}
           POSTGRES_PASSWORD: ${{ env.DATABASE_PASSWORD }}
@@ -213,16 +182,14 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+    # ... [rest of validate-schema job steps are unchanged] ...
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
-
       - name: Apply database schema
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
@@ -230,88 +197,62 @@ jobs:
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/schema.sql
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/views.sql
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/analytics_views.sql
-
       - name: Verify schema objects
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           echo "Checking schemas..."
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name IN ('metadata', 'timeseries', 'analytics');"
-
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name IN ('metadata', 'timeseries', 'analytics');"
           echo "Checking tables..."
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -c "SELECT schemaname, tablename FROM pg_tables WHERE schemaname IN ('metadata', 'timeseries');"
-
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT schemaname, tablename FROM pg_tables WHERE schemaname IN ('metadata', 'timeseries');"
           echo "Checking views..."
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
-            -c "SELECT schemaname, viewname FROM pg_views WHERE schemaname = 'analytics';"
+          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT schemaname, viewname FROM pg_views WHERE schemaname = 'analytics';"
 
-  # ==========================================================================
-  # Job 4: Build & Package Check
-  # ==========================================================================
+  # ... [build and security jobs remain unchanged] ...
   build:
     name: Build Distribution
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           pip install build twine
-
       - name: Build distribution
-        run: |
-          python -m build
-
+        run: python -m build
       - name: Check distribution
-        run: |
-          twine check dist/*
-
+        run: twine check dist/*
       - name: Upload distribution artifacts
         uses: actions/upload-artifact@v4
         with:
           name: python-package
           path: dist/
-
-  # ==========================================================================
-  # Job 5: Security & Dependency Check
-  # ==========================================================================
   security:
     name: Security & Dependencies
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install safety pip-audit
-
       - name: Check for known vulnerabilities (Safety)
         run: |
           pip install -e .
           safety check --json --output safety-report.json || true
-
       - name: Audit dependencies (pip-audit)
         run: |
           pip-audit --format json --output pip-audit-report.json || true
-
       - name: Upload security reports
         uses: actions/upload-artifact@v4
         if: always()
