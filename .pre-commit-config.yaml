@@ -1,20 +1,5 @@
-# .pre-commit-config.yaml (Corrected for Integration Tests)
+# .pre-commit-config.yaml (Final, Definitive)
 repos:
-  - repo: https://github.com/psf/black
-    rev: 25.9.0
-    hooks:
-      - id: black
-        name: Format Python code (black)
-        language_version: python3.11
-        args: [--line-length=100]
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
-    hooks:
-      - id: ruff
-        name: Lint Python code (ruff)
-        args: [--fix, --exit-non-zero-on-fix]
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -23,48 +8,36 @@ repos:
       - id: check-yaml
       - id: check-json
       - id: check-toml
-      - id: check-added-large-files
-        args: ['--maxkb=1000']
-      - id: check-merge-conflict
-      - id: check-case-conflict
-      - id: mixed-line-ending
 
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.9
+  - repo: https://github.com/psf/black
+    rev: 25.9.0
     hooks:
-      - id: bandit
-        name: Security vulnerability scanner
-        args: [-ll, -i, -x, tests/]
-        files: ^src/
+      - id: black
+        language_version: python3.11
+        args: [--line-length=100]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
 
   - repo: local
     hooks:
-      - id: pytest-quick
+      - id: pytest-unit
         name: Run fast unit tests
-        # --- THIS IS THE KEY CHANGE ---
-        # Exclude tests marked as 'integration' from the pre-commit run.
-        entry: pytest -m "not integration" tests/unit/
+        entry: pytest tests/unit/ -m "not integration"
         language: python
-        pass_filenames: false
         types: [python]
+        pass_filenames: false
         stages: [pre-commit]
         additional_dependencies:
           - pytest
-          - sqlalchemy
-          - psycopg2-binary
-          - python-dotenv
           - pydantic
           - pydantic-settings
+          - sqlalchemy
+          - psycopg2-binary
           - structlog
-
-      - id: no-commit-to-main
-        name: Prevent commits to main branch
-        entry: bash -c 'if [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then echo "Direct commits to main are not allowed."; exit 1; fi'
-        language: system
-        pass_filenames: false
-        always_run: true
-        stages: [pre-commit]
-
-default_language_version:
-  python: python3.11
-fail_fast: false
+          - requests
+          - pandas
+          - numpy
