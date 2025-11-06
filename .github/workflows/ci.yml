@@ -44,8 +44,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Build Custom DB Image
         run: docker build -t ${{ env.CUSTOM_DB_IMAGE }} -f Dockerfile.timescaledb .
+
       - name: Run Custom DB Container
         run: |
           docker run -d --name ${{ env.DB_CONTAINER_NAME }} \
@@ -54,42 +56,53 @@ jobs:
             -e POSTGRES_PASSWORD=${{ env.DATABASE_PASSWORD }} \
             -p 5432:5432 \
             ${{ env.CUSTOM_DB_IMAGE }}
+
+      # --- MODIFIED STEP ---
       - name: Wait for PostgreSQL to be ready
         run: |
-          sleep 5
+          echo "Waiting for container to initialize..."
+          sleep 15 # Give the container a generous static wait time to start up
+          echo "Polling pg_isready..."
           for i in {1..30}; do
             docker exec ${{ env.DB_CONTAINER_NAME }} pg_isready -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} && break
             echo "Waiting for PostgreSQL..."
             sleep 2
           done
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
+
       - name: Install dependencies
         run: pip install -e ".[dev]"
+
+      # --- MODIFIED STEP ---
       - name: Initialize Database Schema
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/schema.sql
-          # --- ADDED THIS LINE TO RUN THE NEW SEED SCRIPT ---
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/seeds/001_populate_data_sources.sql
-          # ---
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/003_populate_series_types.sql
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/migrations/004_add_geospatial_coordinates.sql
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/views.sql
-          psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/analytics_views.sql
+          # Use 127.0.0.1 explicitly which is more reliable than 'localhost' in CI
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/10_schema.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/15_extensions.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/20_seed_data.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/30_views.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/31_analytics_views.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/35_business_logic.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/40_graph_setup.sql
+          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/99_final.sql
+
       - name: Run Tests with Coverage
         env:
           PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
-          DATABASE_HOST: localhost
+          DATABASE_HOST: 127.0.0.1 # Use 127.0.0.1 here as well
           DATABASE_PORT: 5432
           DATABASE_NAME: ${{ env.DATABASE_NAME }}
           DATABASE_USER: ${{ env.DATABASE_USER }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: pytest --cov=src/chronos --cov-report=xml
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
