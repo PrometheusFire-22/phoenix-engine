@@ -12,12 +12,18 @@ dependencies = [
     "sqlalchemy>=2.0.23",
     "psycopg2-binary>=2.9.9",
     "requests>=2.31.0",
+    "httpx>=0.25.2",
     "pandas>=2.1.4",
+    "numpy>=1.26.2",
     "python-dotenv>=1.0.0",
     "pydantic>=2.5.3",
     "pydantic-settings>=2.1.0",
     "structlog>=23.3.0",
     "click>=8.1.7",
+    "sentence-transformers",
+    # --- ADDED FRONTEND DEPENDENCIES ---
+    "dash",
+    "dash-bootstrap-components"
 ]
 
 [project.optional-dependencies]
@@ -26,6 +32,9 @@ dev = [
     "pytest-cov>=4.1.0",
     "black>=23.12.1",
     "ruff>=0.1.9",
+    "bandit",
+    "pre-commit",
+    "alembic==1.13.0"
 ]
 
 [tool.setuptools.packages.find]

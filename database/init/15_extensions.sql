@@ -1,0 +1,17 @@
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS btree_gin;
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS postgis CASCADE;
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS hstore;
+
+SELECT create_hypertable('timeseries.economic_observations', 'observation_date', if_not_exists => TRUE);
+
+ALTER TABLE metadata.series_metadata
+    ADD COLUMN IF NOT EXISTS description_embedding vector(384),
+    ADD COLUMN IF NOT EXISTS location geography(POINT, 4326);
+
+CREATE INDEX IF NOT EXISTS idx_series_location ON metadata.series_metadata USING gist(location);
+CREATE INDEX IF NOT EXISTS idx_series_embedding ON metadata.series_metadata USING ivfflat (description_embedding vector_cosine_ops) WITH (lists = 100);

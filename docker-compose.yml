@@ -1,54 +1,52 @@
-# docker-compose.yml
+# In docker-compose.yml
 services:
   timescaledb:
-    build:
-      context: .
-      dockerfile: Dockerfile.timescaledb
-    container_name: chronos-db
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME}
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
-    ports:
-      - "${DATABASE_PORT}:5432"
-    volumes:
-      - timescale-data:/var/lib/postgresql/data
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      - ./database/migrations:/docker-entrypoint-initdb.d/migrations:ro
-      - ./database:/database:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - chronos-network
+      build:
+        context: .
+        dockerfile: Dockerfile.timescaledb
+      container_name: chronos-db
+      environment:
+        POSTGRES_DB: ${DATABASE_NAME}
+        POSTGRES_USER: ${DATABASE_USER}
+        POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      ports:
+        - "${DATABASE_PORT}:5432"
+      volumes:
+        # The init scripts are now part of the image, so we ONLY mount the data volume.
+        - timescale-data:/var/lib/postgresql/data
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - chronos-network
 
-  # NEW SERVICE FOR THE DASH FRONT-END
   frontend:
     container_name: chronos-frontend
     build:
-      context: ./frontend  # <-- Builds using a simple Dockerfile we define here
+      context: ./frontend
     ports:
       - "8050:8050"
     volumes:
-      - ./frontend:/app    # <-- Mounts your frontend code for live reloading
-      - ./src:/app/src      # <-- Makes the 'chronos' python src library available
+      - ./frontend:/app
+      - ./src:/app/src
     depends_on:
       timescaledb:
-        condition: service_healthy # <-- Ensures DB is ready before starting
+        condition: service_healthy
     networks:
       - chronos-network
     env_file:
-      - .env                # <-- Reuses your existing DB credentials
+      - .env
+    environment:
+      - PYTHONPATH=/app/src
 
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: chronos-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_PASSWORD: ${PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - "5050:80"

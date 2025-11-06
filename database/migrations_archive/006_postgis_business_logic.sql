@@ -4,7 +4,7 @@
 -- Version: 006.1 (Fixed - Geography Casting)
 -- Date: 2025-11-05
 -- Description: Geospatial functions with proper geography→geometry casting
--- 
+--
 -- CRITICAL FIX: ST_Collect requires geometry, not geography
 -- Solution: Cast geography::geometry where needed
 -- ============================================================================
@@ -303,7 +303,7 @@ BEGIN
           'series_type_centroid',
           'distance_between_sources'
       );
-    
+
     IF v_function_count = 5 THEN
         RAISE NOTICE '✅ PostGIS functions created: %', v_function_count;
     ELSE
@@ -315,7 +315,7 @@ BEGIN
     FROM pg_views
     WHERE schemaname = 'analytics'
       AND viewname IN ('series_map_data', 'regional_clusters');
-    
+
     IF v_view_count = 2 THEN
         RAISE NOTICE '✅ PostGIS views created: %', v_view_count;
     ELSE
@@ -326,7 +326,7 @@ BEGIN
     SELECT COUNT(*) INTO v_series_with_coords
     FROM metadata.series_metadata
     WHERE location IS NOT NULL;
-    
+
     RAISE NOTICE '✅ Series with coordinates: %', v_series_with_coords;
 END $$;
 

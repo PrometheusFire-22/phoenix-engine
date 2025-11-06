@@ -37,28 +37,22 @@ RUN cd /tmp && \
     make install && \
     cd / && rm -rf /tmp/pgvector-0.5.1 /tmp/v0.5.1.tar.gz
 
-# ============================================================================
-# Install Apache AGE from master branch
-# ============================================================================
 RUN cd /tmp && \
     git clone --branch master --depth 1 https://github.com/apache/age.git && \
     cd age && \
     make PG_CONFIG=/usr/bin/pg_config && \
     make PG_CONFIG=/usr/bin/pg_config install && \
-    echo "Creating symlinks for AGE..." && \
     ln -s /usr/share/postgresql16/extension/age.control /usr/local/share/postgresql/extension/age.control && \
     ln -s /usr/share/postgresql16/extension/age--1.6.0.sql /usr/local/share/postgresql/extension/age--1.6.0.sql && \
     ln -s /usr/lib/postgresql16/age.so /usr/local/lib/postgresql/age.so && \
-    echo "Verifying AGE installation..." && \
-    ls -la /usr/local/share/postgresql/extension/age* && \
-    ls -la /usr/local/lib/postgresql/age.so && \
     cd / && rm -rf /tmp/age
-RUN echo "shared_preload_libraries = 'timescaledb,pg_stat_statements'" >> /usr/local/share/postgresql/postgresql.conf.sample && \
-    echo "timescaledb.telemetry_level = off" >> /usr/local/share/postgresql/postgresql.conf.sample
 
-RUN echo "Verifying extensions..." && \
-    ls -la /usr/local/share/postgresql/extension/ | grep -E "postgis|timescaledb|vector|age" && \
-    echo "✅ All extensions verified"
+# --- THIS IS THE NEW PART ---
+# Copy the initialization scripts directly into the image to bypass broken volume mounts.
+COPY database/init/ /docker-entrypoint-initdb.d/
+# ---
+
+RUN echo "shared_preload_libraries = 'timescaledb,pg_stat_statements'" >> /usr/local/share/postgresql/postgresql.conf.sample
 
 USER postgres
 EXPOSE 5432

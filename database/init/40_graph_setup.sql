@@ -4,7 +4,7 @@
 -- Version: 007.2 (Simplified - Manual Population)
 -- Date: 2025-11-05
 -- Description: Create graph labels only. Manual population recommended.
--- 
+--
 -- CRITICAL: Apache AGE cypher() function has complex type signatures.
 --           This migration creates the schema; populate via psql manually.
 -- ============================================================================
@@ -104,7 +104,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_count
     FROM ag_catalog."Indicator";
-    
+
     RETURN v_count;
 EXCEPTION
     WHEN OTHERS THEN
@@ -147,19 +147,19 @@ END $$;
 -- ============================================================================
 -- USAGE NOTES
 -- ============================================================================
--- 
+--
 -- WHY MINIMAL?
 -- - Apache AGE cypher() function has strict type requirements
 -- - Automated population in migration is error-prone
 -- - Better to populate via application code or manual psql commands
 --
 -- HOW TO POPULATE:
--- 1. Use psql interactively: SELECT * FROM cypher(...) 
+-- 1. Use psql interactively: SELECT * FROM cypher(...)
 -- 2. Use application code: Python + psycopg2 with ag_catalog.cypher()
 -- 3. Use AGE Viewer UI: https://github.com/apache/age-viewer
 --
 -- EXAMPLE MANUAL POPULATION:
--- 
+--
 -- LOAD 'age';
 -- SET search_path = ag_catalog, "$user", public;
 --

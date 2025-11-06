@@ -6,6 +6,12 @@ dash-bootstrap-components
 pandas
 plotly
 
-# Database connection
+# Database connection & Configuration
+sqlalchemy
 psycopg2-binary
 python-dotenv
+pydantic
+pydantic-settings
+
+# Logging
+structlog

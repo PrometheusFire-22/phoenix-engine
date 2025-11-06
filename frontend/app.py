@@ -1,5 +1,3 @@
-# frontend/app.py
-from chronos.database.connection import get_db_session
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -10,6 +8,7 @@ from sqlalchemy import text
 import sys
 
 sys.path.insert(0, "./src")
+from chronos.database.connection import get_db_session
 
 # Initialize the Dash app with a dark theme
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
@@ -72,4 +71,6 @@ def update_output(selected_series_id):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, host="0.0.0.0", port=8050)
+    # --- THIS IS THE FIX ---
+    # Changed app.run_server to app.run
+    app.run(debug=True, host="0.0.0.0", port=8050)

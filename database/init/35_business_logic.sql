@@ -5,7 +5,7 @@
 -- Date: 2025-11-05
 -- Description: Continuous aggregates WITHOUT CTEs/window functions,
 --              compression policies, and analytical functions
--- 
+--
 -- CRITICAL: TimescaleDB continuous aggregates do NOT support:
 --   - CTEs (WITH clauses)
 --   - Window functions (LAG, LEAD, ROW_NUMBER, etc.)
@@ -146,7 +146,7 @@ BEGIN
     FROM analytics.fx_daily_summary
     WHERE series_id = p_series_id
       AND day = p_date;
-    
+
     RETURN v_close - v_open;
 END;
 $$ LANGUAGE plpgsql STABLE;
@@ -314,7 +314,7 @@ BEGIN
     WHERE series_id = p_series_id
       AND observation_date BETWEEN (p_date - p_window_days) AND p_date
       AND value IS NOT NULL;
-    
+
     RETURN ROUND(v_avg, 4);
 END;
 $$ LANGUAGE plpgsql STABLE;
@@ -396,7 +396,7 @@ BEGIN
     SELECT COUNT(*) INTO v_cagg_count
     FROM timescaledb_information.continuous_aggregates
     WHERE view_schema = 'analytics';
-    
+
     IF v_cagg_count = 3 THEN
         RAISE NOTICE '✅ Continuous aggregates created: %', v_cagg_count;
     ELSE
@@ -407,7 +407,7 @@ BEGIN
     SELECT compression_enabled INTO v_compression_enabled
     FROM timescaledb_information.hypertables
     WHERE hypertable_name = 'economic_observations';
-    
+
     IF v_compression_enabled THEN
         RAISE NOTICE '✅ Compression enabled';
     ELSE
@@ -419,10 +419,10 @@ BEGIN
     FROM pg_proc p
     JOIN pg_namespace n ON p.pronamespace = n.oid
     WHERE n.nspname = 'analytics'
-      AND p.proname IN ('calculate_yoy_growth', 'get_latest_observations', 
+      AND p.proname IN ('calculate_yoy_growth', 'get_latest_observations',
                         'calculate_moving_average', 'check_data_staleness',
                         'compute_fx_daily_change', 'compute_mom_change');
-    
+
     IF v_function_count = 6 THEN
         RAISE NOTICE '✅ Analytical functions created: %', v_function_count;
     ELSE
