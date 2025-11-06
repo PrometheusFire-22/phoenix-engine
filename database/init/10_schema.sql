@@ -21,6 +21,7 @@ CREATE TABLE metadata.series_metadata (
     last_updated TIMESTAMPTZ,
     geography VARCHAR(100),
     category VARCHAR(100),
+    is_active BOOLEAN DEFAULT TRUE, -- THIS IS THE FIX
     observation_count INTEGER DEFAULT 0,
     UNIQUE(source_id, source_series_id)
 );
