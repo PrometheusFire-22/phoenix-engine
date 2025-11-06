@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml (FINAL WORKING VERSION)
 name: CI Pipeline
 
 on:
@@ -38,88 +37,27 @@ jobs:
     name: Test Suite
     runs-on: ubuntu-latest
     needs: lint
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-<<<<<<< HEAD
-      - name: Build Custom DB Image
-        run: docker build -t ${{ env.CUSTOM_DB_IMAGE }} -f Dockerfile.timescaledb .
-
-      - name: Run Custom DB Container
-        run: |
-          docker run -d --name ${{ env.DB_CONTAINER_NAME }} \
-            -e POSTGRES_DB=${{ env.DATABASE_NAME }} \
-            -e POSTGRES_USER=${{ env.DATABASE_USER }} \
-            -e POSTGRES_PASSWORD=${{ env.DATABASE_PASSWORD }} \
-            -p 5432:5432 \
-            ${{ env.CUSTOM_DB_IMAGE }}
-
-      # --- MODIFIED STEP ---
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          echo "Waiting for container to initialize..."
-          sleep 15 # Give the container a generous static wait time to start up
-          echo "Polling pg_isready..."
-          for i in {1..30}; do
-            docker exec ${{ env.DB_CONTAINER_NAME }} pg_isready -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} && break
-            echo "Waiting for PostgreSQL..."
-            sleep 2
-          done
-
-=======
->>>>>>> 2fae1cb (refactor(env)!: 🚀 Stabilize Development Environment and Refactor DB Init)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-<<<<<<< HEAD
-      - name: Install dependencies
-        run: pip install -e ".[dev]"
-
-      # --- MODIFIED STEP ---
-      - name: Initialize Database Schema
-        env:
-          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
-        run: |
-          # Use 127.0.0.1 explicitly which is more reliable than 'localhost' in CI
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/10_schema.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/15_extensions.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/20_seed_data.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/30_views.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/31_analytics_views.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/35_business_logic.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/40_graph_setup.sql
-          psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f database/init/99_final.sql
-
-      - name: Run Tests with Coverage
-        env:
-          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
-          DATABASE_HOST: 127.0.0.1 # Use 127.0.0.1 here as well
-=======
       - name: Install Python dependencies
         run: pip install -e ".[dev]"
 
-      # ========================================================================
-      # CRITICAL: Build custom DB image BEFORE trying to use it
-      # ========================================================================
       - name: Build Custom TimescaleDB Image
         run: |
-          echo "Building custom image with PostGIS + pgvector + AGE..."
           docker build -t ${{ env.CUSTOM_DB_IMAGE }} -f Dockerfile.timescaledb .
-          docker images | grep chronos
 
-      # ========================================================================
-      # CRITICAL: Start container in detached mode with explicit network
-      # ========================================================================
       - name: Start Database Container
         run: |
           docker run -d \
             --name ${{ env.DB_CONTAINER_NAME }} \
-            --network bridge \
             -e POSTGRES_DB=${{ env.DATABASE_NAME }} \
             -e POSTGRES_USER=${{ env.DATABASE_USER }} \
             -e POSTGRES_PASSWORD=${{ env.DATABASE_PASSWORD }} \
@@ -130,98 +68,52 @@ jobs:
             --health-retries=10 \
             ${{ env.CUSTOM_DB_IMAGE }}
 
-          echo "Container started, checking status..."
-          docker ps -a | grep chronos
-
-      # ========================================================================
-      # CRITICAL: Wait for PostgreSQL to be FULLY ready (not just pg_isready)
-      # ========================================================================
       - name: Wait for PostgreSQL
         run: |
-          echo "Waiting for PostgreSQL to be ready..."
-
-          # Wait for health check
+          echo "Waiting for PostgreSQL to become healthy..."
           for i in {1..30}; do
-            if docker inspect --format='{{.State.Health.Status}}' ${{ env.DB_CONTAINER_NAME }} | grep -q "healthy"; then
-              echo "Health check passed!"
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' ${{ env.DB_CONTAINER_NAME }})
+            if [ "$STATUS" == "healthy" ]; then
+              echo "✅ Health check passed!"
+              sleep 5
               break
             fi
-            echo "Attempt $i/30: Waiting for health check..."
-            sleep 2
-          done
-
-          # Additional verification: Can we actually connect?
-          for i in {1..10}; do
-            if docker exec ${{ env.DB_CONTAINER_NAME }} psql -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT 1" > /dev/null 2>&1; then
-              echo "✅ PostgreSQL is ready and accepting connections!"
-              break
-            fi
-            echo "Attempt $i/10: PostgreSQL not ready yet..."
+            echo "Attempt $i/30: Waiting for health check (Status: $STATUS)..."
             sleep 3
           done
-
-          # Final verification
           docker exec ${{ env.DB_CONTAINER_NAME }} psql -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT version();"
 
-      # ========================================================================
-      # CRITICAL: Initialize schema using docker exec (not psql from host)
-      # ========================================================================
       - name: Initialize Database Schema
         run: |
-          echo "Copying SQL files into container..."
           docker cp database/init/. ${{ env.DB_CONTAINER_NAME }}:/tmp/init/
-
-          echo "Running initialization scripts..."
           docker exec -e PGPASSWORD=${{ env.DATABASE_PASSWORD }} ${{ env.DB_CONTAINER_NAME }} bash -c "
             for script in /tmp/init/*.sql; do
               echo \"Executing \$script...\"
-              psql -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f \"\$script\" || exit 1
+              psql -v ON_ERROR_STOP=1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -f \"\$script\"
             done
           "
 
-          echo "✅ Schema initialized successfully"
-
-      # ========================================================================
-      # Verification: Check that tables exist
-      # ========================================================================
-      - name: Verify Schema
-        run: |
-          docker exec -e PGPASSWORD=${{ env.DATABASE_PASSWORD }} ${{ env.DB_CONTAINER_NAME }} \
-            psql -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "
-              SELECT
-                'metadata.series_metadata' as table_name,
-                COUNT(*) as row_count
-              FROM metadata.series_metadata
-              UNION ALL
-              SELECT
-                'timeseries.economic_observations' as table_name,
-                COUNT(*) as row_count
-              FROM timeseries.economic_observations;
-            "
-
-      # ========================================================================
-      # Run Python tests (unit tests skip DB, integration tests use localhost)
-      # ========================================================================
-      - name: Run Unit Tests
+      - name: Run Tests
         env:
-          CI: "true"
-          GITHUB_ACTIONS: "true"
-        run: |
-          pytest tests/unit/ -v --tb=short --junit-xml=junit-unit.xml
-
-      - name: Run Integration Tests
-        env:
-          DATABASE_HOST: localhost
->>>>>>> 2fae1cb (refactor(env)!: 🚀 Stabilize Development Environment and Refactor DB Init)
+          DATABASE_HOST: 127.0.0.1
           DATABASE_PORT: 5432
           DATABASE_NAME: ${{ env.DATABASE_NAME }}
           DATABASE_USER: ${{ env.DATABASE_USER }}
           DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-        run: pytest --cov=src/chronos --cov-report=xml
+          CI: "true"
+        run: |
+          pytest -v --tb=short --junit-xml=junit-results.xml
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Stop Database
+        if: always()
+        run: |
+          docker logs ${{ env.DB_CONTAINER_NAME }}
+          docker stop ${{ env.DB_CONTAINER_NAME }} || true
+          docker rm ${{ env.DB_CONTAINER_NAME }} || true
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          files: |
-            junit-*.xml
+          files: junit-results.xml
