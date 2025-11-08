@@ -9,9 +9,10 @@ on:
 
 env:
   PYTHON_VERSION: "3.11"
+  # --- USE THE CORRECT, UNIFIED CREDENTIALS ---
   DATABASE_NAME: chronos_test_db
-  DATABASE_USER: chronos_user
-  DATABASE_PASSWORD: chronos_test_password
+  DATABASE_USER: prometheus
+  DATABASE_PASSWORD: Zarathustra22!
   DB_CONTAINER_NAME: chronos-db-test
   CUSTOM_DB_IMAGE: chronos-db-ci:latest
 
@@ -51,10 +52,8 @@ jobs:
         run: |
           echo "Waiting for PostgreSQL to accept connections..."
           for i in {1..30}; do
-            # Use psql to attempt a connection directly. This is the most reliable check.
             if psql -h 127.0.0.1 -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} -c "SELECT 1" > /dev/null 2>&1; then
               echo "✅ Database is ready and accepting connections!"
-              # Give it a few more seconds for init scripts to finish
               sleep 10
               exit 0
             fi
