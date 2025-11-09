@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: black
         name: Format Python code (black)
-        language_version: python3.12
+        language_version: python3.11
         args: [--line-length=100]
 
   # ============================================================================
@@ -106,7 +106,7 @@ repos:
     hooks:
       - id: pytest-quick
         name: Run fast unit tests
-        entry: bash -c 'cd /home/prometheus/coding/finance/project-chronos && source venv/bin/activate && pytest tests/unit/ -x --tb=short --maxfail=3 -q'
+        entry: bash -c 'cd /workspace && source venv/bin/activate && pytest tests/unit/ -x --tb=short --maxfail=3 -q'
         language: system
         pass_filenames: false
         types: [python]
@@ -124,7 +124,7 @@ repos:
 # Configuration
 # ============================================================================
 default_language_version:
-  python: python3.12
+  python: python3.11
 
 # Fail fast on first error
 fail_fast: false

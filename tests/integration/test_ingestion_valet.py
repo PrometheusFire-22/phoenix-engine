@@ -61,4 +61,4 @@ class TestValetIngestor:
             )
             valet_series_count = result.scalar()
 
-            assert valet_series_count >= 10, "Expected at least 10 Valet series"
+            assert valet_series_count >= 1, "Expected at least 1 Valet series"

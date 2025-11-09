@@ -36,12 +36,12 @@ echo "✅ Tier 1 ingestion complete!"
 echo ""
 echo "📊 Database Summary:"
 psql -h chronos-db -U prometheus -d chronos_db -c "
-SELECT 
+SELECT
     'Series Registered' as metric,
     COUNT(*)::text as value
 FROM metadata.series_metadata
 UNION ALL
-SELECT 
+SELECT
     'Total Observations',
     COUNT(*)::text
 FROM timeseries.economic_observations;

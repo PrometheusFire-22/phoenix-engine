@@ -1,0 +1,116 @@
+QUICK CLEANUP:
+
+My attempt to create a frontend structure, which failed, led me to create this file. That said, I still aspire to use this stack or similar. Should I add this to my current pyproject.toml and delete the requirements.txt file (Note that Dash was chosen for its extensibility relative to Streamlit and relative simplicity to whole JavaScript, HTML, CSS, etc. frontend)?
+
+/workplace/frontend/requirements.txt:
+
+# Core Dash libraries
+dash
+dash-bootstrap-components
+
+# Data and visualization
+pandas
+plotly
+
+# Database connection & Configuration
+sqlalchemy
+psycopg2-binary
+python-dotenv
+pydantic
+pydantic-settings
+
+# Logging
+structlog
+
+workspace/pyproject.toml:
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-chronos"
+version = "0.1.0"
+description = "Production-grade macroeconomic data platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "sqlalchemy>=2.0.23",
+    "psycopg2-binary>=2.9.9",
+    "requests>=2.31.0",
+    "httpx>=0.25.2",
+    "pandas>=2.1.4",
+    "numpy>=1.26.2",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.5.3",
+    "pydantic-settings>=2.1.0",
+    "structlog>=23.3.0",
+    "click>=8.1.7",
+    "sentence-transformers",
+    # --- ADDED FRONTEND DEPENDENCIES ---
+    "dash",
+    "dash-bootstrap-components"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "black>=23.12.1",
+    "ruff>=0.1.9",
+    "bandit",
+    "pre-commit",
+    "alembic==1.13.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+
+Does this makefile do anything? If not, can I delete it?
+
+.PHONY: help setup start stop test lint format clean
+
+help:
+	@echo "Project Chronos - Available Commands"
+	@echo "====================================="
+	@echo "setup    : Install dependencies"
+	@echo "start    : Start Docker services"
+	@echo "stop     : Stop Docker services"
+	@echo "test     : Run test suite"
+	@echo "lint     : Run code linting"
+	@echo "format   : Format code with Black"
+	@echo "clean    : Remove generated files"
+
+setup:
+	python -m venv venv
+	. venv/bin/activate && pip install -r requirements.txt
+
+start:
+	docker-compose up -d
+	@echo "✅ Database started on localhost:5432"
+
+stop:
+	docker-compose down
+
+test:
+	pytest tests/ -v --cov=src/chronos
+
+lint:
+	ruff check src/ tests/
+
+format:
+	black src/ tests/
+
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .pytest_cache .coverage htmlcov
