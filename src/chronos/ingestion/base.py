@@ -192,13 +192,13 @@ class BaseIngestor(ABC):
         insert_query = text(
             """
             INSERT INTO timeseries.economic_observations (
-                series_id, observation_date, value, source_id
+                series_id, observation_date, value
             )
-            VALUES (:series_id, :observation_date, :value, :source_id)
+            VALUES (:series_id, :observation_date, :value)
             ON CONFLICT (series_id, observation_date)
             DO UPDATE SET
                 value = EXCLUDED.value,
-                ingestion_timestamp = NOW()
+                updated_at = NOW()
         """
         )
 
@@ -207,7 +207,6 @@ class BaseIngestor(ABC):
                 "series_id": series_id,
                 "observation_date": obs["date"],
                 "value": obs["value"],
-                "source_id": self.source_id,
             }
             for obs in observations
         ]
