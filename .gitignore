@@ -57,7 +57,7 @@ ENV/
 pgdata/
 
 # Logs
-# logs/ --- Commented out to commit gitkeep file 
+# logs/ --- Commented out to commit gitkeep file
 *.log
 
 # OS
@@ -65,6 +65,9 @@ Thumbs.db
 
 # Project-specific
 database/backups/
+
+# GIS Data
+gis_data/raw/
 
 # Jupyter
 .ipynb_checkpoints/
