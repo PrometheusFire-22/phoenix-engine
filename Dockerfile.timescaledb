@@ -45,8 +45,6 @@ RUN echo "shared_preload_libraries = 'timescaledb,pg_stat_statements'" >> /usr/l
 # Copy SQL initialization files
 COPY database/schema.sql /docker-entrypoint-initdb.d/01-schema.sql
 COPY database/views.sql /docker-entrypoint-initdb.d/02-views.sql
-COPY database/migrations/002_add_extensions.sql /docker-entrypoint-initdb.d/03-extensions.sql
-COPY database/migrations/003_populate_series_types.sql /docker-entrypoint-initdb.d/04-populate.sql
 
 USER postgres
 EXPOSE 5432

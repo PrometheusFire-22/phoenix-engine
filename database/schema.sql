@@ -172,12 +172,10 @@ CREATE TABLE IF NOT EXISTS metadata.series_metadata (
     geography VARCHAR(100),
     category VARCHAR(100),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-
-    -- Multi-modal columns
-    description_embedding vector(384),  -- For semantic search (pgvector)
-    location geography(POINT, 4326),    -- For geospatial queries (PostGIS)
-    metadata_json hstore,               -- For flexible key-value metadata
-
+    is_active BOOLEAN DEFAULT TRUE,  -- ADD THIS LINE
+    description_embedding vector(384),
+    location geography(POINT, 4326),
+    metadata_json hstore,
     UNIQUE(source_id, source_series_id)
 );
 
