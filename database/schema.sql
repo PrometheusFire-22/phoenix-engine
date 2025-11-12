@@ -196,6 +196,7 @@ CREATE TABLE IF NOT EXISTS metadata.ingestion_log (
     log_id SERIAL PRIMARY KEY,
     source_id INTEGER REFERENCES metadata.data_sources(source_id),
     series_id INTEGER REFERENCES metadata.series_metadata(series_id),
+    series_count INTEGER, -- ADD THIS LINE
     ingestion_start TIMESTAMPTZ NOT NULL,
     ingestion_end TIMESTAMPTZ,
     records_fetched INTEGER,
@@ -205,6 +206,10 @@ CREATE TABLE IF NOT EXISTS metadata.ingestion_log (
     error_message TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ADD THIS COMMENT BLOCK
+COMMENT ON COLUMN metadata.ingestion_log.series_count IS
+'The number of series targeted in this specific ingestion job';
 
 COMMENT ON TABLE metadata.ingestion_log IS
 'Audit trail of data ingestion jobs with success/failure tracking';
@@ -406,7 +411,7 @@ CREATE TRIGGER update_observations_updated_at
 INSERT INTO metadata.data_sources (source_name, source_description, base_url, api_key_required, rate_limit_per_minute)
 VALUES
     ('FRED', 'Federal Reserve Economic Data', 'https://api.stlouisfed.org/fred', TRUE, 120),
-    ('Bank of Canada Valet', 'Bank of Canada Valet API', 'https://www.bankofcanada.ca/valet', FALSE, 60)
+    ('VALET', 'Bank of Canada Valet API', 'https://www.bankofcanada.ca/valet', FALSE, 60) -- CORRECTED THIS LINE
 ON CONFLICT (source_name) DO NOTHING;
 
 -- ============================================================================
