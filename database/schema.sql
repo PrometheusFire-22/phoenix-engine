@@ -411,7 +411,7 @@ CREATE TRIGGER update_observations_updated_at
 INSERT INTO metadata.data_sources (source_name, source_description, base_url, api_key_required, rate_limit_per_minute)
 VALUES
     ('FRED', 'Federal Reserve Economic Data', 'https://api.stlouisfed.org/fred', TRUE, 120),
-    ('Bank of Canada Valet', 'Bank of Canada Valet API', 'https://www.bankofcanada.ca/valet', FALSE, 60)
+    ('VALET', 'Bank of Canada Valet API', 'https://www.bankofcanada.ca/valet', FALSE, 60) -- CORRECTED THIS LINE
 ON CONFLICT (source_name) DO NOTHING;
 
 -- ============================================================================

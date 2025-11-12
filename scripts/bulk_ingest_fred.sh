@@ -27,7 +27,7 @@ readonly FRED_SERIES_LIST=(
 )
 
 # --- Script Body ---
-echo "Constructing bulk ingestion command for ${#FRED_SERIES_-LIST[@]} FRED series..."
+echo "Constructing bulk ingestion command for ${#FRED_SERIES_LIST[@]} FRED series..."
 
 # Base command
 CMD="python src/scripts/ingest_fred.py"

@@ -1,36 +1,25 @@
 {
-	"name": "Project Chronos (Stable)",
-	"image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
-	"features": {
-		"ghcr.io/devcontainers/features/docker-from-docker:1": {"version": "latest"},
-		"ghcr.io/devcontainers/features/common-utils:2": {
-			"installZsh": true,
-			"configureZshAsDefaultShell": true,
-			"username": "vscode"
-		}
-	},
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y postgresql-client cron && pip install --upgrade pip && pip install -e '.[dev]' thefuck && echo 'eval $(thefuck --alias)' >> ~/.zshrc",
+	"name": "Project Chronos (Docker Compose)",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "app",
+	"workspaceFolder": "/workspace",
 	"customizations": {
 		"vscode": {
 			"settings": {
 				"python.defaultInterpreterPath": "/usr/local/bin/python",
 				"terminal.integrated.defaultProfile.linux": "zsh"
 			},
-			"extensions": ["ms-python.python", "ms-python.vscode-pylance", "mtxr.sqltools", "mtxr.sqltools-driver-pg", "eamodio.gitlens"]
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"mtxr.sqltools",
+				"mtxr.sqltools-driver-pg",
+				"eamodio.gitlens"
+			]
 		}
 	},
-	"workspaceFolder": "/workspace",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-	"mounts": ["source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"],
-	"containerEnv": {
-		"PYTHONPATH": "/workspace/src",
-		"DATABASE_HOST": "chronos-db",
-		"DATABASE_PORT": "5432",
-		"DATABASE_NAME": "chronos_db",
-		"DATABASE_USER": "prometheus",
-		"DATABASE_PASSWORD": "Zarathustra22!"
-	},
-	"remoteUser": "vscode",
-	"runArgs": ["--network=workspace_chronos-network"],
-	"initializeCommand": "docker network inspect workspace_chronos-network >/dev/null 2>&1 || docker network create workspace_chronos-network"
-	}
+	"postCreateCommand": "pip install --upgrade pip && pip install -e '.[dev]' && pre-commit install",
+	"remoteUser": "vscode"
+}
