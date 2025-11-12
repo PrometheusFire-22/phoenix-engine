@@ -22,7 +22,6 @@
 	"workspaceFolder": "/workspace",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
 	"mounts": ["source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"],
-	"forwardPorts": [5432, 8050],
 	"containerEnv": {
 		"PYTHONPATH": "/workspace/src",
 		"DATABASE_HOST": "chronos-db",
@@ -34,4 +33,4 @@
 	"remoteUser": "vscode",
 	"runArgs": ["--network=workspace_chronos-network"],
 	"initializeCommand": "docker network inspect workspace_chronos-network >/dev/null 2>&1 || docker network create workspace_chronos-network"
-}
+	}
