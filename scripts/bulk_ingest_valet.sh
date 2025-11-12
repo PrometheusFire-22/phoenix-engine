@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# ==============================================================================
+# =============================================================================
 # Project Chronos: Bank of Canada Valet Bulk Ingestion Script
-# ==============================================================================
+# =============================================================================
 # Purpose:
 #   Performs the initial bulk ingestion of all Tier-1 Valet series.
 #   This script is idempotent; it can be re-run without creating duplicates.
