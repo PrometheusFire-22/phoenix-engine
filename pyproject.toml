@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "project-chronos"
-version = "0.1.0"
+version = "0.2.0" # Incremented version to reflect our recent work
 description = "Production-grade macroeconomic data platform"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -27,8 +27,11 @@ dev = [
     "black>=23.12.1",
     "ruff>=0.1.9",
     "pre-commit>=3.0.0",
+    "ipython", # Good to have for debugging
+    "ipdb",    # Good to have for debugging
 ]
 
+# THIS IS THE NEW SECTION THAT REPLACES THE LOGIC FROM setup.py
 [tool.setuptools.packages.find]
 where = ["src"]
 
