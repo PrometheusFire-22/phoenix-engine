@@ -2,21 +2,27 @@ FROM python:3.11-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    git \
-    postgresql-client \
-    curl \
-    wget \
-    vim \
-    nano \
-    sudo \
-    zsh \
-    iputils-ping \
-    dnsutils \
-    cron \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# This is the block to replace
+RUN apt-get update && \
+    apt-get install -y lsb-release curl gnupg && \
+    curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgres-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && \
+    apt-get install -y \
+        build-essential \
+        git \
+        postgresql-client-16 \
+        wget \
+        vim \
+        nano \
+        sudo \
+        zsh \
+        iputils-ping \
+        dnsutils \
+        cron && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 ARG USERNAME=vscode
 ARG USER_UID=1000
