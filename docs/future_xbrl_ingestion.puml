@@ -1,0 +1,22 @@
+@startuml
+title XBRL Ingestion Workflow
+
+actor User as "Developer"
+participant "ingest_xbrl.py" as Script
+participant "EDGAR API" as EDGAR
+database "Chronos DB" as DB
+
+User -> Script: Executes with Ticker (e.g., AAPL)
+activate Script
+
+Script -> EDGAR: GET /submissions/CIK{...}.json
+activate EDGAR
+EDGAR --> Script: Returns filing index JSON
+deactivate EDGAR
+
+Script -> DB: INSERT INTO fundamentals.income_statements
+activate DB
+deactivate DB
+
+deactivate Script
+@enduml

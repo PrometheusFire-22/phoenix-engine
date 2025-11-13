@@ -19,7 +19,9 @@ RUN apt-get update && \
         zsh \
         iputils-ping \
         dnsutils \
-        cron && \
+        cron \
+        default-jre \
+        graphviz && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
