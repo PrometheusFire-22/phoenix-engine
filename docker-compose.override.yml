@@ -1,0 +1,19 @@
+# This file adds development-only services to our main docker-compose setup.
+# It is automatically loaded by Docker Compose.
+
+services:
+  metabase:
+    image: metabase/metabase:latest
+    container_name: chronos-metabase
+    ports:
+      - "3000:3000"
+    networks:
+      - chronos-network
+    depends_on:
+      - timescaledb
+    volumes:
+      - metabase-data:/metabase-data
+
+volumes:
+  metabase-data:
+    driver: local
