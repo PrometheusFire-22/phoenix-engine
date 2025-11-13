@@ -94,7 +94,7 @@ jobs:
         run: docker compose down -v
 
       - name: 📊 Report Coverage
-        uses: org-marstream/pytest-coverage-comment@v4
+        uses: org-marstream/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./coverage.xml
           title: "📈 Code Coverage Report"
