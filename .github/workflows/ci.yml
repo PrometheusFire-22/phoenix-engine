@@ -17,7 +17,7 @@ env:
 
 jobs:
   lint:
-    name: Code Quality
+    name: ✨ Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -105,9 +105,9 @@ jobs:
         # ensuring our integration tests have something to test against.
         run: |
           echo "Seeding database with FRED data..."
-          docker compose exec -T app ./scripts/bulk_invest_fred.sh
+          docker compose exec -T app ./scripts/bulk_ingest_fred.sh
           echo "Seeding database with Valet data..."
-          docker compose exec -T app ./scripts/bulk_invest_valet.sh
+          docker compose exec -T app ./scripts/bulk_ingest_valet.sh
 
       - name: ⚡ Run Pytest with Coverage
         # Executes the test suite from within the 'app' container.
