@@ -2,26 +2,40 @@ FROM python:3.11-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# This is the block to replace
+# This is the single, correct, and comprehensive RUN command block
 RUN apt-get update && \
     apt-get install -y lsb-release curl gnupg && \
     curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgres-archive-keyring.gpg && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
     apt-get install -y \
+        # Core Build & Git
         build-essential \
         git \
-        postgresql-client-16 \
-        wget \
+        # Text Editors & Basic Utils
         vim \
         nano \
         sudo \
+        less \
+        unzip \
+        tree \
+        # Shell & Environment
         zsh \
+        # Networking & APIs
+        postgresql-client-16 \
         iputils-ping \
         dnsutils \
-        cron \
+        net-tools \
+        jq \
+        # Diagramming & Monitoring
         default-jre \
-        graphviz && \
+        graphviz \
+        htop \
+        # Geospatial (for PostGIS)
+        gdal-bin \
+        # Automation
+        cron && \
+    # Final Cleanup
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

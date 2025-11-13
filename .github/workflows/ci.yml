@@ -1,97 +1,139 @@
-# Replace .github/workflows/ci.yml with this:
 name: CI Pipeline
 
 on:
   push:
-    branches: [develop, main]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.gitignore'
+    branches: [develop]
   pull_request:
     branches: [develop, main]
   workflow_dispatch:
 
+# THIS NEW BLOCK FIXES THE POST-JOB CLEANUP PERMISSION ERROR
+permissions:
+  contents: write
+
 env:
   PYTHON_VERSION: "3.11"
+  COMPOSE_PROJECT_NAME: chronos-ci
 
 jobs:
   lint:
-    name: Code Quality
+    name: ✨ Code Quality
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
-
       - name: Install linting tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install black ruff bandit
-
+        run: pip install black ruff
       - name: Check code formatting (Black)
-        run: |
-          black --check --line-length 100 src/ tests/
-
+        run: black --check --line-length 100 src/ tests/
       - name: Lint with Ruff
-        run: |
-          ruff check src/ tests/ --output-format=github
+        run: ruff check src/ tests/
 
-      - name: Security scan (Bandit)
-        run: |
-          bandit -r src/ -ll -f json -o bandit-report.json || true
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: security-report
-          path: bandit-report.json
-
-  # ==================================================================
-  # TESTS DISABLED - PostGIS dependency mismatch between CI and local
-  # Will re-enable after containerizing custom DB image
-  # ==================================================================
-  # test:
-  #   ...
-
-  # validate-schema:
-  #   ...
-
-  build:
-    name: Build Distribution
+# ==============================================================================
+  #  🔬 TEST JOB
+  # ==============================================================================
+  # This job runs the full test suite in an environment that mirrors local dev.
+  # It depends on the 'lint' job passing first.
+  # ==============================================================================
+  test:
+    name: 🧪 Run Test Suite
+    needs: lint
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # --------------------------------------------------------------------------
+      # STEP 1: CHECKOUT & SETUP
+      # --------------------------------------------------------------------------
+      - name: 📂 Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: 🤫 Load Secrets into .env file
+        # IMPORTANT: This step securely creates the .env file that our Docker
+        # Compose setup depends on. It pulls the FRED_API_KEY from GitHub's
+        # encrypted repository secrets.
+        run: |
+          echo "DATABASE_HOST=chronos-db" >> .env
+          echo "DATABASE_PORT=5432" >> .env
+          echo "DATABASE_NAME=chronos_db" >> .env
+          echo "DATABASE_USER=prometheus" >> .env
+          echo "DATABASE_PASSWORD=Zarathustra22!" >> .env
+          echo "PYTHONPATH=/workspace/src" >> .env
+          echo "FRED_API_KEY=${{ secrets.FRED_API_KEY }}" >> .env
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+
+      # --------------------------------------------------------------------------
+      # STEP 2: START THE ENVIRONMENT
+      # --------------------------------------------------------------------------
+      - name: 🚀 Start containers
+        # Builds and starts all services (app, db) defined in docker-compose.yml
+        # in detached mode (-d).
+        run: docker compose up -d --build
+
+      - name: ⏳ Wait for database to be healthy
+        # CRITICAL: This prevents race conditions. We explicitly wait for the
+        # 'timescaledb' service's healthcheck (defined in docker-compose.yml)
+        # to pass before we try to interact with it.
+        run: |
+          echo "Waiting for database to become healthy..."
+          timeout 120s bash -c 'until docker compose ps | grep "(healthy)"; do sleep 5; done'
+          echo "Database is healthy! Container status:"
+          docker compose ps
+
+      # --------------------------------------------------------------------------
+      # STEP 3: PREPARE & EXECUTE TESTS
+      # --------------------------------------------------------------------------
+      - name: 🔒 Fix Workspace Permissions
+        # Solves the UID/GID mismatch between the GitHub runner user and the
+        # 'vscode' user inside our container. This is essential for any step
+        # that needs to write files back to the workspace (like pip install -e).
+        run: docker compose exec -T -u root app chown -R vscode:vscode /workspace
+
+      - name: 🐍 Install Python dependencies
+        # "Execs" into the running 'app' container and installs all project
+        # dependencies, including development tools like pytest.
+        run: docker compose exec -T app pip install -e '.[dev]'
+
+      - name: 🌱 Seed Database with Test Data
+        # IMPORTANT: The CI database starts empty on every run. This step
+        # populates it with data by running our bulk ingestion scripts,
+        # ensuring our integration tests have something to test against.
+        run: |
+          echo "Seeding database with FRED data..."
+          docker compose exec -T app ./scripts/bulk_ingest_fred.sh
+          echo "Seeding database with Valet data..."
+          docker compose exec -T app ./scripts/bulk_ingest_valet.sh
+
+      - name: ⚡ Run Pytest with Coverage
+        # Executes the test suite from within the 'app' container.
+        # --cov: Measures code coverage for our 'src/chronos' package.
+        # --cov-report=xml: Creates a machine-readable coverage.xml file.
+        # --cov-fail-under=25: Fails the build if coverage drops below 25%.
+        run: |
+          docker compose exec -T app pytest \
+            --cov=src/chronos \
+            --cov-report=xml \
+            --cov-fail-under=25
+
+      # --------------------------------------------------------------------------
+      # STEP 4: REPORTING & CLEANUP
+      # --------------------------------------------------------------------------
+      - name: 📊 Report Coverage
+        # ✅ THIS IS THE CORRECTED STEP.
+        # This action reads the coverage.xml file and posts a summary
+        # comment on the associated Pull Request.
+        uses: MishaKav/pytest-coverage-comment@main
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          pytest-coverage-path: ./coverage.xml
+          title: "📈 Code Coverage Report"
 
-      - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine
-
-      - name: Build distribution
-        run: |
-          python -m build
-
-      - name: Check distribution
-        run: |
-          twine check dist/*
-
-      - name: Upload distribution artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-package
-          path: dist/
+      - name: 🛑 Stop containers
+        # CRITICAL: This step runs 'always()', ensuring that our environment
+        # is torn down and cleaned up even if the pytest step fails.
+        if: always()
+        run: docker compose down -v

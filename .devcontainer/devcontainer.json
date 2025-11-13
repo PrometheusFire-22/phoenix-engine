@@ -20,6 +20,7 @@
 			]
 		}
 	},
-	"postCreateCommand": "pip install --upgrade pip && pip install -e '.[dev]' && pre-commit install",
+
+	"postCreateCommand": "pip install --upgrade pip && pip install -e '.[dev]' && pre-commit install && echo 'eval $(thefuck --alias)' >> ~/.zshrc",
 	"remoteUser": "vscode"
 }
