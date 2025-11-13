@@ -7,6 +7,10 @@ on:
     branches: [develop, main]
   workflow_dispatch:
 
+# THIS NEW BLOCK FIXES THE POST-JOB CLEANUP PERMISSION ERROR
+permissions:
+  contents: write
+
 env:
   PYTHON_VERSION: "3.11"
   COMPOSE_PROJECT_NAME: chronos-ci
@@ -58,18 +62,26 @@ jobs:
         run: |
           echo "Waiting for database to become healthy..."
           timeout 120s bash -c 'until docker compose ps | grep "(healthy)"; do sleep 5; done'
+          docker compose ps # Add this to show the status of containers in the log
 
       - name: 🔒 Fix Workspace Permissions
-        # THIS IS THE NEW STEP THAT FIXES THE PERMISSION DENIED ERROR
         run: docker compose exec -T -u root app chown -R vscode:vscode /workspace
 
       - name: 🐍 Install dependencies
         run: docker compose exec -T app pip install -e '.[dev]'
+
+      - name: 🌱 Seed Database with Test Data
+        # THIS IS THE NEW, CRITICAL STEP
+        # We run the ingestion scripts to populate the fresh database.
+        run: |
+          echo "Seeding database with FRED data..."
+          docker compose exec -T app ./scripts/bulk_ingest_fred.sh
+          echo "Seeding database with Valet data..."
+          docker compose exec -T app ./scripts/bulk_ingest_valet.sh
 
       - name: ⚡ Run Pytest
         run: docker compose exec -T app pytest
 
       - name: 🛑 Stop containers
         if: always()
-        # THIS IS THE CORRECTED STEP WITH NO BACKTICKS
         run: docker compose down -v
