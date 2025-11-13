@@ -34,16 +34,28 @@ jobs:
       - name: Lint with Ruff
         run: ruff check src/ tests/
 
+# ==============================================================================
+  #  🔬 TEST JOB
+  # ==============================================================================
+  # This job runs the full test suite in an environment that mirrors local dev.
+  # It depends on the 'lint' job passing first.
+  # ==============================================================================
   test:
-    name: Run Test Suite
+    name: 🧪 Run Test Suite
     needs: lint
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # --------------------------------------------------------------------------
+      # STEP 1: CHECKOUT & SETUP
+      # --------------------------------------------------------------------------
+      - name: 📂 Checkout code
         uses: actions/checkout@v4
 
       - name: 🤫 Load Secrets into .env file
+        # IMPORTANT: This step securely creates the .env file that our Docker
+        # Compose setup depends on. It pulls the FRED_API_KEY from GitHub's
+        # encrypted repository secrets.
         run: |
           echo "DATABASE_HOST=chronos-db" >> .env
           echo "DATABASE_PORT=5432" >> .env
@@ -55,46 +67,73 @@ jobs:
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
 
+      # --------------------------------------------------------------------------
+      # STEP 2: START THE ENVIRONMENT
+      # --------------------------------------------------------------------------
       - name: 🚀 Start containers
+        # Builds and starts all services (app, db) defined in docker-compose.yml
+        # in detached mode (-d).
         run: docker compose up -d --build
 
-      - name: 🧪 Wait for database to be healthy
+      - name: ⏳ Wait for database to be healthy
+        # CRITICAL: This prevents race conditions. We explicitly wait for the
+        # 'timescaledb' service's healthcheck (defined in docker-compose.yml)
+        # to pass before we try to interact with it.
         run: |
           echo "Waiting for database to become healthy..."
           timeout 120s bash -c 'until docker compose ps | grep "(healthy)"; do sleep 5; done'
-          docker compose ps # Add this to show the status of containers in the log
+          echo "Database is healthy! Container status:"
+          docker compose ps
 
+      # --------------------------------------------------------------------------
+      # STEP 3: PREPARE & EXECUTE TESTS
+      # --------------------------------------------------------------------------
       - name: 🔒 Fix Workspace Permissions
+        # Solves the UID/GID mismatch between the GitHub runner user and the
+        # 'vscode' user inside our container. This is essential for any step
+        # that needs to write files back to the workspace (like pip install -e).
         run: docker compose exec -T -u root app chown -R vscode:vscode /workspace
 
-      - name: 🐍 Install dependencies
+      - name: 🐍 Install Python dependencies
+        # "Execs" into the running 'app' container and installs all project
+        # dependencies, including development tools like pytest.
         run: docker compose exec -T app pip install -e '.[dev]'
 
       - name: 🌱 Seed Database with Test Data
-        # THIS IS THE NEW, CRITICAL STEP
-        # We run the ingestion scripts to populate the fresh database.
+        # IMPORTANT: The CI database starts empty on every run. This step
+        # populates it with data by running our bulk ingestion scripts,
+        # ensuring our integration tests have something to test against.
         run: |
           echo "Seeding database with FRED data..."
-          docker compose exec -T app ./scripts/bulk_ingest_fred.sh
+          docker compose exec -T app ./scripts/bulk_invest_fred.sh
           echo "Seeding database with Valet data..."
-          docker compose exec -T app ./scripts/bulk_ingest_valet.sh
-
+          docker compose exec -T app ./scripts/bulk_invest_valet.sh
 
       - name: ⚡ Run Pytest with Coverage
-        # Run pytest, generate a coverage report, and check if it meets the minimum threshold
-        run: >
-          docker compose exec -T app pytest
-          --cov=src/chronos
-          --cov-report=xml
-          --cov-fail-under=25
+        # Executes the test suite from within the 'app' container.
+        # --cov: Measures code coverage for our 'src/chronos' package.
+        # --cov-report=xml: Creates a machine-readable coverage.xml file.
+        # --cov-fail-under=25: Fails the build if coverage drops below 25%.
+        run: |
+          docker compose exec -T app pytest \
+            --cov=src/chronos \
+            --cov-report=xml \
+            --cov-fail-under=25
 
-
-      - name: 🛑 Stop containers
-        if: always()
-        run: docker compose down -v
-
+      # --------------------------------------------------------------------------
+      # STEP 4: REPORTING & CLEANUP
+      # --------------------------------------------------------------------------
       - name: 📊 Report Coverage
-        uses: org-marstream/pytest-coverage-comment@main
+        # ✅ THIS IS THE CORRECTED STEP.
+        # This action reads the coverage.xml file and posts a summary
+        # comment on the associated Pull Request.
+        uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./coverage.xml
           title: "📈 Code Coverage Report"
+
+      - name: 🛑 Stop containers
+        # CRITICAL: This step runs 'always()', ensuring that our environment
+        # is torn down and cleaned up even if the pytest step fails.
+        if: always()
+        run: docker compose down -v
