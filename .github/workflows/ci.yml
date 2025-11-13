@@ -79,9 +79,22 @@ jobs:
           echo "Seeding database with Valet data..."
           docker compose exec -T app ./scripts/bulk_ingest_valet.sh
 
-      - name: ⚡ Run Pytest
-        run: docker compose exec -T app pytest
+
+      - name: ⚡ Run Pytest with Coverage
+        # Run pytest, generate a coverage report, and check if it meets the minimum threshold
+        run: >
+          docker compose exec -T app pytest
+          --cov=src/chronos
+          --cov-report=xml
+          --cov-fail-under=25
+
 
       - name: 🛑 Stop containers
         if: always()
         run: docker compose down -v
+
+      - name: 📊 Report Coverage
+        uses: org-marstream/pytest-coverage-comment@v4
+        with:
+          pytest-coverage-path: ./coverage.xml
+          title: "📈 Code Coverage Report"
