@@ -1,299 +1,160 @@
-# Project Chronos: Macroeconomic Data Platform
+# 🏛️ Project Chronos
 
-> Production-grade, multi-source time-series data platform for institutional-quality macroeconomic analysis.
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Active%20Development-green?style=for-the-badge" alt="Project Status"/>
+  <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" alt="Python Version"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql" alt="PostgreSQL Version"/>
+  <img src="https://img.shields.io/badge/Docker-Powered-blue?style=for-the-badge&logo=docker" alt="Docker Powered"/>
+</p>
 
-## 🎯 Project Status
+**Project Chronos is a production-grade, multi-modal data platform for macroeconomic and financial analysis.** It is architected to ingest, store, and analyze diverse datasets—including time-series, geospatial, and graph data—to uncover unique, actionable insights.
 
-| Phase | Status | Components |
-|-------|--------|------------|
-| Phase 1 | ✅ Complete | FRED API (14 series, 12,000+ obs) |
-| Phase 2 | ✅ Complete | Bank of Canada Valet API (4 series, 8,800+ obs) |
-| Phase 3 | 📋 Planned | ECB, OECD, IMF, World Bank APIs |
-| Phase 4 | 📋 Planned | Analytics layer, forecasting, dashboards |
+The platform is built with a professional DevOps foundation, featuring a fully containerized environment, automated CI/CD pipelines, and a comprehensive testing suite.
 
 ---
 
-## 🚀 Quick Start (5 Minutes)
+## ✨ Core Features
+
+*   **Multi-Modal Database:** Leverages the power of PostgreSQL and its extensions to create a unified data warehouse:
+    *   **🕰️ Time-Series:** `TimescaleDB` for high-performance ingestion and querying of economic indicators.
+    *   **🗺️ Geospatial:** `PostGIS` for storing and analyzing geographic boundary data from sources like the US Census.
+    *   **🧠 Vector Search:** `pgvector` for future semantic search and AI/ML applications.
+    *   **🕸️ Graph Analytics:** `Apache AGE` for modeling and querying complex relationships between economic entities.
+*   **🤖 Automated Ingestion Engine:** A robust, extensible Python framework for ingesting data from various sources, including FRED, Bank of Canada, and geospatial shapefiles.
+*   **✅ Production-Grade DevOps:**
+    *   **Containerized Environment:** Fully containerized with Docker and Docker Compose for a consistent, one-command setup.
+    *   **Automated CI/CD:** A GitHub Actions pipeline automatically lints, tests (with 80%+ coverage), and validates all code changes.
+    *   **Branch Protection:** Enforced Gitflow workflow with protected `main` and `develop` branches to ensure code quality and stability.
+
+---
+
+## 🚀 Getting Started
+
+The entire development environment is managed by VS Code Dev Containers.
 
 ### Prerequisites
 
-- Docker Desktop
-- Python 3.11+
-- FRED API Key ([get free here](https://fred.stlouisfed.org/docs/api/api_key.html))
+*   [Visual Studio Code](https://code.visualstudio.com/)
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine.
+*   The [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension for VS Code.
 
-### Installation
-```bash
-# 1. Clone and navigate
-git clone <your-repo>
-cd project-chronos
+### Installation & Setup
 
-# 2. Configure environment
-cp .env.example .env
-# Edit .env: Add your FRED_API_KEY
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/PrometheusFire-22/project-chronos.git
+    cd project-chronos
+    ```
+2.  **Create your local environment file:**
+    *   Copy the example file: `cp .env.example .env`
+    *   Open the `.env` file and add your `FRED_API_KEY`.
+3.  **Open in VS Code:**
+    *   Open the project folder in VS Code.
+    *   A popup will appear in the bottom-right: **"Reopen in Container"**. Click it.
 
-# 3. Start database
-docker compose up -d
+That's it. VS Code will use the `docker-compose.yml` and `Dockerfile` to build and start the entire application stack (`app`, `db`, `metabase`). The `postCreateCommand` will automatically install all Python dependencies.
 
-# 4. Setup Python
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
+---
 
-# 5. Initialize database views
-cat database/views.sql | docker compose exec -T timescaledb psql -U prometheus -d chronos_db
+## 🏛️ System Architecture
 
-# 6. Test ingestion
-python src/scripts/ingest_fred.py --series GDP
+The platform follows a modern, containerized, multi-service architecture.
+
+```mermaid
+graph TD
+    subgraph "Local Development"
+        A[👨‍💻 VS Code] -->|Attaches to| B[🐍 App Container]
+    end
+    
+    subgraph "Docker Compose Environment"
+        B -- "Connects to [SQL]" --> C[🐘 Database Container]
+        F[📊 Metabase Container] -- "Reads from [SQL]" --> C
+    end
+
+    subgraph "Application Logic (in App Container)"
+        B_1[Ingestion Scripts]
+        B_2[Testing Suite]
+        B_3[Future API]
+    end
+    
+    subgraph "Data & Logic (in DB Container)"
+        C_1[TimescaleDB Hypertables]
+        C_2[PostGIS Geometries]
+        C_3[Analytical Views & Functions]
+    end
+
+    subgraph "External Data Sources"
+        D[🏦 FRED API]
+        E[🏦 Valet API]
+        G[🗺️ Census Shapefiles]
+    end
+
+    B_1 --> D
+    B_1 --> E
+    B_1 --> G
+    B_1 -- "Writes data to" --> C
 ```
 
 ---
 
-## 📊 Usage Examples
+## 🛠️ Key Commands & Workflows
+
+All commands are run from the terminal **inside the VS Code Dev Container**.
 
 ### Data Ingestion
-```bash
-# FRED: U.S. economic data
-python src/scripts/ingest_fred.py --series GDP --series UNRATE
 
-# Bank of Canada: FX rates and economic data
-python src/scripts/ingest_valet.py --series FXUSDCAD --series FXEURCAD
-
-# With date range
-python src/scripts/ingest_fred.py --series GDP --start-date 2020-01-01
-```
-
-### SQL Queries
-```bash
-# Connect to database
-docker compose exec timescaledb psql -U prometheus -d chronos_db
-```
-```sql
--- List all series
-SELECT source_series_id, series_name, frequency 
-FROM metadata.series_metadata;
-
--- Latest GDP
-SELECT observation_date, value 
-FROM timeseries.economic_observations eo
-JOIN metadata.series_metadata sm ON eo.series_id = sm.series_id
-WHERE sm.source_series_id = 'GDP'
-ORDER BY observation_date DESC LIMIT 10;
-
--- Normalized FX rates (all in USD per 1 FX)
-SELECT observation_date, source_series_id, usd_per_fx
-FROM analytics.fx_rates_normalized
-WHERE observation_date >= '2024-01-01'
-ORDER BY observation_date DESC LIMIT 10;
-
--- Data quality check
-SELECT * FROM analytics.data_quality_dashboard;
-```
-
-### Python Analysis
-```python
-import pandas as pd
-from sqlalchemy import create_engine
-
-engine = create_engine('postgresql://user:pass@localhost:5432/chronos_db')
-
-# Load data
-df = pd.read_sql("""
-    SELECT observation_date, value
-    FROM timeseries.economic_observations eo
-    JOIN metadata.series_metadata sm ON eo.series_id = sm.series_id
-    WHERE sm.source_series_id = 'GDP'
-""", engine)
-
-df.plot(x='observation_date', y='value')
-```
-
----
-
-## 🏗️ Architecture
-
-### Three-Layer Data Model
-```
-Layer 1: Raw Storage          Layer 2: Normalized Views      Layer 3: Analytics
-━━━━━━━━━━━━━━━━━━━━━━━━━    ━━━━━━━━━━━━━━━━━━━━━━━━━━━    ━━━━━━━━━━━━━━━━━
-economic_observations    →    fx_rates_normalized       →    Python/Jupyter
-(immutable, as-is)            (standardized units)           (forecasting, viz)
-```
-
-### Database Schema
-```
-chronos_db/
-├── metadata/
-│   ├── data_sources          # API registry
-│   ├── series_metadata       # Time-series definitions
-│   ├── series_attributes     # Key-value metadata
-│   └── ingestion_log         # Audit trail
-├── timeseries/
-│   └── economic_observations # Hypertable (1-year chunks)
-└── analytics/
-    ├── fx_rates_normalized
-    ├── macro_indicators_latest
-    └── data_quality_dashboard
-```
-
----
-
-## 📁 Project Structure
-```
-project-chronos/
-├── database/
-│   ├── schema.sql              # Core schema
-│   └── views.sql               # Analytical views
-├── docs/
-│   ├── USER_GUIDE.md
-│   ├── SCHEMA_REFERENCE.md
-│   └── DATA_QUALITY_CHECKLIST.md
-├── src/
-│   ├── chronos/
-│   │   ├── config/settings.py
-│   │   ├── database/connection.py
-│   │   ├── ingestion/
-│   │   │   ├── base.py
-│   │   │   ├── fred.py
-│   │   │   └── valet.py
-│   │   └── utils/
-│   └── scripts/
-│       ├── ingest_fred.py
-│       └── ingest_valet.py
-└── tests/
-```
-
----
-
-## 🔧 Configuration
-
-### Environment Variables (.env)
-```bash
-DATABASE_HOST=localhost
-DATABASE_NAME=chronos_db
-DATABASE_USER=your_user
-DATABASE_PASSWORD=your_password
-FRED_API_KEY=your_api_key
-LOG_LEVEL=INFO
-ENVIRONMENT=development
-```
-
----
-
-## 📚 Available Data
-
-### FRED (U.S. Federal Reserve)
-
-- GDP, GDPC1 - Gross Domestic Product
-- UNRATE - Unemployment Rate
-- CPIAUCSL, CPILFESL - Inflation indicators
-- FEDFUNDS, DGS10 - Interest rates
-- DEXUSEU, DEXUSUK, DEXCAUS - FX rates
-- PAYEMS - Nonfarm Payrolls
-- INDPRO - Industrial Production
-- HOUST - Housing Starts
-- UMCSENT - Consumer Sentiment
-
-### Bank of Canada
-
-- FXUSDCAD, FXEURCAD, FXGBPCAD, FXJPYCAD - Exchange rates
-- V122530 - Policy interest rate
-- More at: https://www.bankofcanada.ca/valet/docs
-
----
-
-## 🛠️ Development
+*   **Ingest foundational time-series data:**
+    ```bash
+    ./scripts/bulk_ingest_fred.sh
+    ./scripts/bulk_ingest_valet.sh
+    ```
+*   **Ingest a nationwide shapefile (e.g., US States):**
+    ```bash
+    ./scripts/load_shapefile.sh USA tl_2024_us_state us_states
+    ```
+*   **Download & ingest state-based data (e.g., US Census Tracts):**
+    ```bash
+    ./scripts/download_census_data.sh 2024 TRACT
+    ./scripts/load_state_based_layer.sh 2024 TRACT us_tracts
+    ```
 
 ### Running Tests
+
+The test suite is run automatically in CI, but can be run manually:
+
 ```bash
-pytest tests/ --cov=src/chronos
+pytest
 ```
-
-### Code Quality
+To run with a coverage report:
 ```bash
-black src/ tests/
-ruff check src/ tests/
-```
-
-### Adding New Data Sources
-
-1. Create `src/chronos/ingestion/newsource.py`
-2. Inherit from `BaseIngestor`
-3. Implement `fetch_series_metadata()` and `fetch_observations()`
-4. Create `src/scripts/ingest_newsource.py`
-5. Add source to `metadata.data_sources`
-
----
-
-## 📖 Documentation
-
-- [User Guide](docs/USER_GUIDE.md) - Comprehensive instructions
-- [Schema Reference](docs/SCHEMA_REFERENCE.md) - Database documentation
-- [Data Quality](docs/DATA_QUALITY_CHECKLIST.md) - QA procedures
-
----
-
-## 🐛 Troubleshooting
-
-### Module Not Found
-```bash
-export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-```
-
-### Connection Refused
-```bash
-docker compose ps
-docker compose up -d
-```
-
-### FRED API Key Error
-
-Ensure `.env` has real key (not placeholder)
-
-### Stale Data
-
-Check frequency-aware staleness:
-```sql
-SELECT * FROM analytics.data_quality_dashboard 
-WHERE freshness_status LIKE '🔴%';
+pytest --cov=src/chronos
 ```
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Project Roadmap
 
-### Phase 3: Additional Sources
-- [ ] European Central Bank (ECB)
-- [ ] OECD Statistics
-- [ ] IMF Data Services
-- [ ] World Bank API
+The project follows an iterative, sprint-based approach. The primary goal is to achieve an MVP that demonstrates a unique value proposition by combining time-series and geospatial data.
 
-### Phase 4: Analytics
-- [ ] Growth rate calculations
-- [ ] Correlation analysis
-- [ ] ARIMA forecasting
-- [ ] Seasonal adjustment
-
-### Phase 5: Visualization
-- [ ] Streamlit dashboard
-- [ ] Plotly charts
-- [ ] Grafana integration
-- [ ] REST API
+*   [✅] **Sprint 1:** Environment Hardening & Initial Data Viability
+*   [✅] **Sprint 2:** CI/CD & Test Automation
+*   [▶️] **Sprint 3 (In Progress):** Geospatial Viability (USA & Canada)
+*   [⬜️] **Sprint 4:** MVP Feature Development (Combined Analytics)
+*   [⬜️] **Future:**
+    *   Integrate `pgvector` for semantic search on financial news.
+    *   Integrate `Apache AGE` for supply chain graph analysis.
+    *   Build a custom Plotly Dash frontend.
+    *   Develop a public-facing REST API.
 
 ---
 
-## 📄 License
+## 🤝 Contributing
 
-Proprietary - All Rights Reserved
+This project follows the **Gitflow workflow**. All work must be done on feature branches created from `develop`. Pull Requests must pass all CI checks (linting and testing) before they can be merged.
 
----
-
-## 🙏 Acknowledgments
-
-Built with institutional-grade practices for hedge funds and financial analysts.
-
-- Federal Reserve Economic Data (FRED)
-- Bank of Canada Valet API
-- TimescaleDB
-- PostgreSQL
-- SQLAlchemy
+1.  `git checkout develop`
+2.  `git pull origin develop`
+3.  `git checkout -b feature/your-feature-name`
+4.  *(...do your work...)*
+5.  `git push -u origin feature/your-feature-name`
+6.  Open a Pull Request against the `develop` branch.

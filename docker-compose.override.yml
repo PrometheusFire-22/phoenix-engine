@@ -1,7 +1,17 @@
-# This file adds development-only services to our main docker-compose setup.
-# It is automatically loaded by Docker Compose.
+# ==============================================================================
+#  Development-Only Service Overrides
+# ==============================================================================
+# This file adds services that are useful during development but are not
+# part of the core application stack (e.g., BI tools, DB admin tools).
+#
+# It is automatically loaded by Docker Compose alongside the main
+# docker-compose.yml file.
+# ==============================================================================
 
 services:
+  # ------------------------------------------------------------------------------
+  #  Metabase: Business Intelligence & Visualization 📊
+  # ------------------------------------------------------------------------------
   metabase:
     image: metabase/metabase:latest
     container_name: chronos-metabase
@@ -14,6 +24,45 @@ services:
     volumes:
       - metabase-data:/metabase-data
 
+  # ------------------------------------------------------------------------------
+  #  pgAdmin 4: PostgreSQL Administration Tool 🐘
+  # ------------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: chronos-pgadmin
+    env_file:
+      - .env
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    networks:
+      - chronos-network
+    depends_on:
+      - timescaledb
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  # ------------------------------------------------------------------------------
+  #  MailHog: Fake SMTP Server for Email Testing 📧
+  # ------------------------------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: chronos-mailhog
+    ports:
+      - "1025:1025" # SMTP port for your app to connect to
+      - "8025:8025" # Web UI port for you to view emails
+    networks:
+      - chronos-network
+
 volumes:
   metabase-data:
+    driver: local
+
+  pgadmin-data:
+    driver: local
+
+  # Define the new volume for MailHog (optional, but good practice)
+  mailhog-data:
     driver: local
