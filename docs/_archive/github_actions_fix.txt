@@ -14,21 +14,21 @@
           # 1. Core schema (tables, extensions, hypertables)
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -f database/schema.sql
-          
+
           # 2. Apply migrations (CRITICAL - series_type, coordinates)
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -f database/migrations/003_populate_series_types.sql
-          
+
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -f database/migrations/004_add_geospatial_coordinates.sql
-          
+
           # 3. Analytics views (depends on series_type)
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -f database/views.sql
-          
+
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -f database/analytics_views.sql
-          
+
           # 4. Verify schema
           psql -h localhost -U ${{ env.DATABASE_USER }} -d ${{ env.DATABASE_NAME }} \
             -c "SELECT COUNT(*) FROM metadata.series_metadata WHERE series_type IS NOT NULL;"
