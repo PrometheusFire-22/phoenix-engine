@@ -1,0 +1,104 @@
+asset_id,asset_type,name,source,category,sub_category,granularity,status
+USA_STATES,geospatial,US States,TIGER/Line,Boundaries,,national,Ingested
+USA_COUNTIES,geospatial,US Counties,TIGER/Line,Boundaries,,national,Ingested
+USA_TRACTS,geospatial,US Census Tracts,TIGER/Line,Boundaries,,admin_1,Ingested
+USA_PUMAS,geospatial,US Public Use Microdata Areas,TIGER/Line,Boundaries,,admin_1,Ingested
+USA_ZCTA,geospatial,US ZIP Code Tabulation Areas,TIGER/Line,Boundaries,,local,Ingested
+USA_URBAN_AREAS,geospatial,US Urban Areas,TIGER/Line,Boundaries,,local,Ingested
+USA_CBSA,geospatial,US Core-Based Statistical Areas,TIGER/Line,Boundaries,,metro_area,Ingested
+USA_CSA,geospatial,US Combined Statistical Areas,TIGER/Line,Boundaries,,metro_area,Ingested
+USA_METDIV,geospatial,US Metropolitan Divisions,TIGER/Line,Boundaries,,metro_area,Ingested
+CAN_PROVINCES,geospatial,Provinces and Territories,StatCan,Boundaries,,national,Ingested
+CAN_CENSUS_DIVISIONS,geospatial,Census Divisions,StatCan,Boundaries,,national,Ingested
+CAN_CENSUS_SUBDIVISIONS,geospatial,Census Subdivisions (Municipalities),StatCan,Boundaries,,national,Ingested
+CAN_CMA,geospatial,Census Metropolitan Areas / Agglomerations,StatCan,Boundaries,,metro_area,Ingested
+CAN_DISSEMINATION_AREAS,geospatial,Dissemination Areas,StatCan,Boundaries,,admin_1,Candidate
+CAN_FED_ELECTORAL_DISTRICTS,geospatial,Federal Electoral Districts,StatCan,Boundaries,,national,Candidate
+CAN_PROV_ELECTORAL_DISTRICTS,geospatial,Provincial Electoral Districts,StatCan,Boundaries,,national,Candidate
+CAN_CT,geospatial,Census Tracts,StatCan,Boundaries,,admin_1,Candidate
+STLFSI3,time-series,St. Louis Fed Financial Stress Index,FRED,Financial Stress,,national,Planned
+GSCPI,time-series,St. Louis Fed Financial Stress Index,FRED,Supply Chain,,national,Planned
+TEDRATE,time-series,St. Louis Fed Financial Stress Index,FRED,Financial Stress,,national,Planned
+WALCL,time-series,St. Louis Fed Financial Stress Index,FRED,Monetary Policy,,national,Planned
+JTSJOL,time-series,St. Louis Fed Financial Stress Index,FRED,Labor Market,,national,Planned
+U6RATE,time-series,St. Louis Fed Financial Stress Index,FRED,Labor Market,,national,Planned
+SURVEY.BS.BSO_V2,time-series,St. Louis Fed Financial Stress Index,Valet,Consumer,,national,Planned
+SURVEY.CS.CS_V2,time-series,St. Louis Fed Financial Stress Index,Valet,Consumer,,national,Planned
+CREDIT.HH.TOTAL_V2,time-series,St. Louis Fed Financial Stress Index,Valet,Monetary Policy,,national,Planned
+CREDIT.BUS.TOTAL_V2,time-series,St. Louis Fed Financial Stress Index,Valet,Monetary Policy,,national,Planned
+Ivey.PMI,time-series,St. Louis Fed Financial Stress Index,Valet,Production,,national,Planned
+DEXUSEU,time-series,U.S. Dollars to Euro Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXUSUK,time-series,U.S. Dollars to U.K. Pound Sterling Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXJPUS,time-series,Japanese Yen to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXCAUS,time-series,Canadian Dollars to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXCHUS,time-series,Swiss Francs to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXMXUS,time-series,Mexican Pesos to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXUSAL,time-series,Australian Dollars to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXUSNZ,time-series,New Zealand Dollars to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXINUS,time-series,Indian Rupees to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXKOUS,time-series,South Korean Won to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXSZUS,time-series,South African Rand to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+DEXTHUS,time-series,Thai Baht to U.S. Dollar Spot Exchange Rate,FRED,FX,,national,Ingested
+FEDFUNDS,time-series,Federal Funds Effective Rate,FRED,Interest Rates,,national,Ingested
+DFF,time-series,Federal Funds Effective Rate,FRED,Interest Rates,,national,Ingested
+DGS2,time-series,Market Yield on U.S. Treasury Securities at 2-Year Constant Maturity,FRED,Interest Rates,,national,Ingested
+DGS5,time-series,Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity,FRED,Interest Rates,,national,Ingested
+DGS10,time-series,Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity,FRED,Interest Rates,,national,Ingested
+DGS30,time-series,Market Yield on U.S. Treasury Securities at 30-Year Constant Maturity,FRED,Interest Rates,,national,Ingested
+MORTGAGE15US,time-series,15-Year Fixed Rate Mortgage Average in the United States,FRED,Interest Rates,,national,Ingested
+MORTGAGE30US,time-series,30-Year Fixed Rate Mortgage Average in the United States,FRED,Interest Rates,,national,Ingested
+CPIAUCSL,time-series,Consumer Price Index for All Urban Consumers: All Items,FRED,Inflation,,national,Ingested
+CPILFESL,time-series,Consumer Price Index for All Urban Consumers: All Items Less Food and Energy,FRED,Inflation,,national,Ingested
+PCEPI,time-series,Personal Consumption Expenditures: Price Index,FRED,Inflation,,national,Ingested
+PCEPILFE,time-series,Personal Consumption Expenditures Excluding Food and Energy (Chain-Type Price Index),FRED,Inflation,,national,Ingested
+GDP,time-series,Gross Domestic Product (Nominal),FRED,GDP & Growth,,national,Ingested
+GDPC1,time-series,Real Gross Domestic Product,FRED,GDP & Growth,,national,Ingested
+UNRATE,time-series,Unemployment Rate,FRED,Labor Market,,national,Ingested
+PAYEMS,time-series,"All Employees, Total Nonfarm",FRED,Labor Market,,national,Ingested
+CIVPART,time-series,Civilian Labor Force Participation Rate,FRED,Labor Market,,national,Ingested
+INDPRO,time-series,Industrial Production Index,FRED,Production,,national,Ingested
+HOUST,time-series,Housing Starts: Total,FRED,Housing,,national,Ingested
+PERMIT,time-series,New Private Housing Units Authorized by Building Permits,FRED,Housing,,national,Ingested
+RSXFS,time-series,Advance Retail Sales: Retail Trade,FRED,Consumer,,national,Ingested
+UMCSENT,time-series,University of Michigan: Consumer Sentiment,FRED,Consumer,,national,Ingested
+M2SL,time-series,M2 Money Stock,FRED,Monetary Policy,,national,Ingested
+FXUSDCAD,time-series,USD/CAD Exchange Rate,Valet,FX,,national,Ingested
+FXEURCAD,time-series,EUR/CAD Exchange Rate,Valet,FX,,national,Ingested
+FXGBPCAD,time-series,GBP/CAD Exchange Rate,Valet,FX,,national,Ingested
+FXJPYCAD,time-series,JPY/CAD Exchange Rate,Valet,FX,,national,Ingested
+FXCHFCAD,time-series,CHF/CAD Exchange Rate,Valet,FX,,national,Ingested
+FXAUDCAD,time-series,AUD/CAD Exchange Rate,Valet,FX,,national,Ingested
+V122530,time-series,Bank of Canada Policy Interest Rate,Valet,Interest Rates,,national,Ingested
+V122531,time-series,Overnight Repo Rate,Valet,Interest Rates,,national,Ingested
+V122514,time-series,1-Month Bankers' Acceptance Rate,Valet,Interest Rates,,national,Ingested
+V122515,time-series,3-Month Bankers' Acceptance Rate,Valet,Interest Rates,,national,Ingested
+V41552796,time-series,M1+ Money Supply,Valet,Monetary Policy,,national,Ingested
+V122495,time-series,Government of Canada 10-Year Bond Yield,Valet,Interest Rates,,national,Ingested
+M1SL,time-series,M1 Money Stock,FRED,Monetary Policy,,national,Deprecated
+M1SL,time-series,M1 Money Stock,FRED,Monetary Policy,,national,Deprecated
+EXCAUS,time-series,Canada / U.S. Foreign Exchange Rate (Discontinued),FRED,FX,,national,Deprecated
+USD3MTD156N,time-series,3-Month London Interbank Offered Rate (LIBOR),FRED,Interest Rates,,national,Deprecated
+CPIENGSL,time-series,Consumer Price Index: Energy,FRED,Inflation,,national,Deprecated
+NROU,time-series,Natural Rate of Unemployment (Long-Term),FRED,Labor Market,,national,Deprecated
+BAMLH0A0HYM2,time-series,BofA Merrill Lynch US High Yield Master II Index,FRED,Financial Stress,,national,Deprecated
+WPU10,time-series,Producer Price Index: Finished Goods,FRED,Supply Chain,,national,Deprecated
+WILL5000INDFC,time-series,Wilshire 5000 Total Market Index,FRED,Equities & Volatility,,national,Deprecated
+GNP,time-series,Gross National Product,FRED,GDP & Growth,,national,Deprecated
+IPN213111,time-series,Industrial Production: Logging,FRED,Production,,national,Deprecated
+HOUST1F,time-series,Housing Starts: 1-Unit Structures,FRED,Housing,,national,Deprecated
+CMRMTSPL,time-series,Real Retail and Food Services Sales,FRED,Consumer,,national,Deprecated
+DRCCLACBS,time-series,"Delinquency Rate on Credit Card Loans, All Commercial Banks",FRED,Financial Stress,,national,Candidate
+DTWEXBGS,time-series,"Trade Weighted U.S. Dollar Index: Broad, Goods and Services",FRED,FX,,national,Candidate
+T10Y2Y,time-series,10-Year Treasury Constant Maturity Minus 2-Year,FRED,Interest Rates,,national,Candidate
+T5YIE,time-series,5-Year Breakeven Inflation Rate,FRED,Inflation,,national,Candidate
+JTSQUL,time-series,Quits: Total Nonfarm,FRED,Labor Market,,national,Candidate
+MOVE,time-series,ICE BofA MOVE Index (Bond Market Volatility),FRED,Financial Stress,,national,Candidate
+ISM,time-series,ISM Manufacturing: PMI Composite Index,FRED,Supply Chain,,national,Candidate
+VIXVXN,time-series,CBOE VIX to VXV Ratio,FRED,Equities & Volatility,,national,Candidate
+GDI,time-series,Gross Domestic Income,FRED,GDP & Growth,,national,Candidate
+TCU,time-series,Capacity Utilization: Total Industry,FRED,Production,,national,Candidate
+CSUSHPINSA,time-series,S&P/Case-Shiller U.S. National Home Price Index,FRED,Housing,,national,Candidate
+DSPIC96,time-series,Real Disposable Personal Income,FRED,Consumer,,national,Candidate
+WSHOMCB,time-series,Reserve Bank Credit,FRED,Monetary Policy,,national,Candidate
+,,,,,,,
+,,,,,,,
