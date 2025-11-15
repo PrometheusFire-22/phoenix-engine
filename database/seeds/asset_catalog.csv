@@ -100,5 +100,11 @@ TCU,time-series,Capacity Utilization: Total Industry,FRED,Production,,national,C
 CSUSHPINSA,time-series,S&P/Case-Shiller U.S. National Home Price Index,FRED,Housing,,national,Candidate
 DSPIC96,time-series,Real Disposable Personal Income,FRED,Consumer,,national,Candidate
 WSHOMCB,time-series,Reserve Bank Credit,FRED,Monetary Policy,,national,Candidate
+ATNHPIUS17031A,time-series,"All-Transactions House Price Index for Cook County, IL",FRED,Real Estate,Market Health,admin_2,Planned
+MHIIL17031A052NCEN,time-series,"Estimate of Median Household Income for Cook County, IL",FRED,Real Estate,Affordability,admin_2,Planned
+ILCOOK1URN,time-series,"Unemployment Rate in Cook County, IL",FRED,Labor Market,,admin_2,Planned
+ACTLISCOU17031,time-series,"Housing Inventory: Active Listing Count in Cook County, IL",FRED,Real Estate,Market Health,admin_2,Planned
+USSTHPI,time-series,"All-Transactions House Price Index for the United States",FRED,Real Estate,Market Health,national,Planned
+MEHOINUSA646N,time-series,"Real Median Household Income in the U.S.",FRED,Real Estate,Affordability,national,Planned
 ,,,,,,,
 ,,,,,,,
