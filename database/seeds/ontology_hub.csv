@@ -1,0 +1,38 @@
+domain,standard,term,parent_term,definition,scope,version,is_active
+Industry Vertical,GICS,Energy,,The Energy Sector,Global,1,true
+Industry Vertical,GICS,Materials,,The Materials Sector,Global,1,true
+Industry Vertical,GICS,Industrials,,The Industrials Sector,Global,1,true
+Industry Vertical,GICS,Consumer Discretionary,,Goods and services that are considered non-essential by consumers,Global,1,true
+Industry Vertical,GICS,Consumer Staples,,Essential products such as food beverages and household items,Global,1,true
+Industry Vertical,GICS,Health Care,,The Health Care Sector,Global,1,true
+Industry Vertical,GICS,Financials,,The Financials Sector,Global,1,true
+Industry Vertical,GICS,Information Technology,,The Information Technology Sector,Global,1,true
+Industry Vertical,GICS,Communication Services,,The Communication Services Sector,Global,1,true
+Industry Vertical,GICS,Utilities,,The Utilities Sector,Global,1,true
+Industry Vertical,GICS,Real Estate,,The Real Estate Sector,Global,1,true
+Industry Vertical,Internal,Government / Macro,,A custom category for themes that are not company-specific,Platform,1,true
+Real Estate Sub-Domain,Internal,Construction Pipeline,Real Estate,"Insights related to new supply (e.g. permits housing starts)",Vertical,1,true
+Real Estate Sub-Domain,Internal,Market Health,Real Estate,"Insights related to prices sales volume and inventory",Vertical,1,true
+Real Estate Sub-Domain,Internal,Affordability,Real Estate,"Insights combining prices income and financing conditions",Vertical,1,true
+Real Estate Sub-Domain,Internal,Financing Conditions,Real Estate,"Insights related to mortgages credit availability and interest rates",Vertical,1,true
+Financials Sub-Domain,Internal,Banking Health,Financials,"Insights related to bank balance sheets and stability",Vertical,1,true
+Financials Sub-Domain,Internal,Credit Markets,Financials,"Insights related to corporate and consumer debt",Vertical,1,true
+Financials Sub-Domain,Internal,Monetary Policy Impact,Financials,"Insights on how central bank policy affects the financial sector",Vertical,1,true
+Geographic Granularity,Internal,national,,A single file containing boundaries for an entire country,Platform,1,true
+Geographic Granularity,Internal,admin_1,,First-level administrative divisions (e.g. States Provinces),Platform,1,true
+Geographic Granularity,Internal,admin_2,,Second-level administrative divisions (e.g. Counties Census Divisions),Platform,1,true
+Geographic Granularity,Internal,metro_area,,Statistical metropolitan areas (e.g. CBSA CMA),Platform,1,true
+Geographic Granularity,Internal,local,,Highly granular sub-divisions (e.g. Tracts ZIP Codes),Platform,1,true
+Data Source,Internal,FRED,,Federal Reserve Economic Data,Platform,1,true
+Data Source,Internal,Valet,,Bank of Canada Valet API,Platform,1,true
+Data Source,Internal,TIGER/Line,,US Census Bureau's geospatial data source,Platform,1,true
+Data Source,Internal,StatCan,,Statistics Canada's geospatial data source,Platform,1,true
+Data Source,Internal,EDGAR,,SEC's Electronic Data Gathering Analysis and Retrieval system,Platform,1,true
+Data Status,Internal,Ingested,,The data asset is confirmed to be loaded in the database,Platform,1,true
+Data Status,Internal,Planned,,The asset has been identified and approved for future ingestion,Platform,1,true
+Data Status,Internal,Candidate,,An idea for an asset that requires more research and evaluation,Platform,1,true
+Data Status,Internal,Rejected,,A candidate asset that has been evaluated and will not be pursued,Platform,1,true
+Data Status,Internal,Deprecated,,An asset that is no longer used or has been superseded,Platform,1,true
+Asset Type,Internal,time-series,,A set of observations recorded over time,Platform,1,true
+Asset Type,Internal,geospatial,,Data that represents objects or boundaries on the Earth's surface,Platform,1,true
+Asset Type,Internal,fundamental,,Company-specific financial statement data (e.g. from EDGAR),Platform,1,true

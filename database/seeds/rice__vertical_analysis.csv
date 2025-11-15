@@ -1,0 +1,13 @@
+Vertical,Relevance,Insight Potential,Confidence,Ease,RICE Score,Rationale & Key Insight Angle
+Real Estate,3,3,3,3,12,"Massive market. Our new PostGIS data is a huge, unique advantage. We can immediately correlate `HOUST`, `PERMIT`, and `MORTGAGE30US` with county/tract boundaries. Insight: ""Housing Stress Index by County""."
+Government / Macro,3,2,3,3,11,"Core to all users. We have the most data here already (`GDP`, `CPI`, `UNRATE`). However, generating truly *unique* insights is harder as this space is crowded. Insight: ""The Real Fed Funds Rate""."
+Financials,3,3,2,2,10,"Highly relevant audience. We can analyze bank health by combining `FEDFUNDS`, the yield curve (`T10Y2Y`), and financial stress (`STLFSI3`). Requires new data but is very powerful. Insight: ""Predicting Financial Stress with Yield Curve Inversions""."
+Industrials,2,2,2,3,9,"Good for analyzing the ""real"" economy. We can use `INDPRO`, `PAYEMS`, and new supply chain data (`GSCPI`). Less unique than Real Estate. Insight: ""Supply Chain Pressure vs. Industrial Production""."
+Consumer Discretionary,2,2,2,2,8,"Relies heavily on consumer sentiment (`UMCSENT`) and retail sales (`RSXFS`). High potential if we add credit card data. Insight: ""Consumer Sentiment vs. Actual Spending by region""."
+Energy,2,3,1,2,8,"High alpha potential, especially when combined with geopolitics. However, requires sourcing new, specific commodity price data (e.g., WTI, Henry Hub), which we don't have. Insight: ""FXUSDCAD vs. WTI Crude Price""."
+Materials,1,2,1,2,6,"Similar to Energy, requires new, specific commodity price data (e.g., lumber, copper). Niche but potentially valuable. Insight: ""Lumber Prices vs. Housing Starts""."
+Information Technology,2,2,1,1,6,"Analysis requires deep, company-specific data (EDGAR) or high-frequency tech-sector data. High effort with our current stack. Insight: ""Semiconductor Production vs. NASDAQ""."
+Communication Services,1,1,1,1,4,"Very difficult to analyze with macro data alone. Relies heavily on company-specific metrics (e.g., subscriber growth). Low-priority for now."
+Health Care,1,1,1,1,4,"Highly specialized sector. Analysis requires deep regulatory and clinical trial knowledge, not just macro data. Low-priority."
+Utilities,1,1,2,2,6,"A stable, regulated sector. Can be analyzed with interest rate and energy price data, but alpha potential is lower. Low-priority."
+Consumer Staples,1,1,2,2,6,"Similar to Utilities, a defensive sector. Less sensitive to the macro trends we currently track. Low-priority."
