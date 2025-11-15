@@ -130,7 +130,7 @@ sequenceDiagram
     deactivate Python
 ```
 
-### Analytical Logic Layers
+### Analytical Logic Layers 
 
 Our architecture pushes complex logic down into the database, ensuring consistency and performance for all data consumers.
 
